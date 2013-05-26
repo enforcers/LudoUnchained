@@ -11,33 +11,31 @@ Tutorials
 *	[Google App Engine Tutorial for Java](http://www.vogella.com/articles/GoogleAppEngineJava/article.html)
 *	[Google IO Session Overview](http://bradabrams.com/2011/05/google-io-session-overview-android-app-engine-a-developers-dream-combination/)
 
-Einrichten von Android SDK
--------------------------
-#### Android SDK downloaded und installieren ####
-[Android SDK Tools for Windows](http://dl.google.com/android/installer_r22-windows.exe)
+Quick Setup
+-----------
+#### 1. Android ADT Bundle ####
+[ADT Bundle for Windows](http://developer.android.com/sdk/index.html)
+Entpacken unter _C:\ADT\_
 
-#### Android SDK konfigurieren ####
-_SDK Manager.exe_ ausführen und folgende Pakete installieren:
+#### 2. Eclipse Plugins installieren ####
+* _C:\ADT\eclipse\eclipse.exe_ starten
+* _Help_ -> _Install new Software..._
+* Unter _Work with:_ "http://dl.google.com/eclipse/plugin/4.2" eintragen
+* Select All und installieren
+
+#### 3. Android SDK einrichten ####
+_C:\ADT\SDK Manager.exe_ starten und folgende Pakete installieren:
 * Android 4.2.2 (API 17) komplett (incl. Google APIs)
 * Extras -> Android Support Library
 * Extras -> Google Cloud Messaging for Android Library
 Notfalls einfach komplett alles installieren.
 
-#### Android AVD konfigurieren ####
-_AVD Manager.exe_ ausführen und eine neues Virtual Device erstellen. Wichtig ist, dass als Target "Google API" läuft.
+#### 4. GitHub einrichten ####
+* [GitHub für Windows](http://windows.github.com/) installieren und einrichten
+* Das _enforcers/LudoUnchained_ Reporsitory rechtsklicken -> "clone to..." -> _C:\ADT\
 
-Einrichten von Eclipse
-----------------------
-#### Eclipse downloaden und installieren ####
-[Eclipse IDE for Java EE Developers](http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/junosr2)
-
-#### Eclipse Plugins installieren ####
-Folgende Eclipse Plugins installieren ( _Help -> Eclipse Marketplace_ )
-*	Android Development Tools for Eclipse
-*	Google Plugin for Eclipse
-
-#### Workspace einbinden ####
-In Eclipse als Workspace das _workspace_ Verzeichnis von GitHub angeben. Workspace ändern geht in Eclipse unter _File -> Switch Workspace..._
+#### 5. Workspace einrichten ####
+Eine Verknüpfung zu _"C:\ADT\eclipse\eclipse.exe" -data C:\ADT\LudoUnchained_ erstellen
 
 #### Testlauf ####
 In dem Workspace befinden sich zwei Java Projekte.

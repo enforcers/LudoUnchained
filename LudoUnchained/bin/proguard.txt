@@ -21,3 +21,6 @@
 # onClick res/layout/activity_register.xml #generated:59
 -keepclassmembers class * { *** doRegister(...); }
 
+# onClick res/layout/activity_lobby_browser.xml #generated:17
+-keepclassmembers class * { *** flushPreferences(...); }
+
