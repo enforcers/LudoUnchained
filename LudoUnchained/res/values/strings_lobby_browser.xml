@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_activity_lobby_browser">Lobby Browser</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_new_lobby">New Lobby</string>
+    <string name="action_logout">Logout</string>
+    <string name="lobby_user_cell_head">User</string>
+    <string name="lobby_players_cell_head">Players</string>
+
+</resources>

@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.datanucleus.annotations.Unowned;
@@ -20,14 +21,19 @@ public class Game {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key gameId;
-	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+	@Unowned
+	@OneToOne(cascade=CascadeType.DETACH, fetch=FetchType.EAGER)
+	private User gameLeader;
+
+	@OneToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
 	@Unowned
 	Map<Integer, User> users;
 	
 	public Game(User user) {
 		users = new HashMap<Integer, User>();
 		users.put(0, user);
+		gameLeader = user;
 	}
 	
 	public Key getGameId() {
@@ -36,6 +42,10 @@ public class Game {
 	
 	public void addUser(int color, User user) {
 		users.put(color, user);
+	}
+	
+	public User getGameLeader() {
+		return gameLeader;
 	}
 	
 	public Map<Integer, User> getUsers() {

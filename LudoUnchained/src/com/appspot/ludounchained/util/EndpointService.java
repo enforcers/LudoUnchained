@@ -1,11 +1,13 @@
 package com.appspot.ludounchained.util;
 
 import java.io.IOException;
+import java.util.List;
 
-import com.appspot.ludounchained.usercontrollerEndpoint.UsercontrollerEndpoint;
-import com.appspot.ludounchained.usercontrollerEndpoint.model.Game;
-import com.appspot.ludounchained.usercontrollerEndpoint.model.Session;
-import com.appspot.ludounchained.usercontrollerEndpoint.model.User;
+import com.appspot.ludounchained.controllerEndpoint.ControllerEndpoint;
+import com.appspot.ludounchained.controllerEndpoint.model.CollectionResponseGame;
+import com.appspot.ludounchained.controllerEndpoint.model.Game;
+import com.appspot.ludounchained.controllerEndpoint.model.Session;
+import com.appspot.ludounchained.controllerEndpoint.model.User;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -16,15 +18,7 @@ public enum EndpointService {
 	
 	public Session login (String username, String password) {
 		Session result = null;
-
-		UsercontrollerEndpoint.Builder endpointBuilder = new UsercontrollerEndpoint.Builder(
-    			AndroidHttp.newCompatibleTransport(),
-    			new JacksonFactory(),
-    			new HttpRequestInitializer() {
-    				public void initialize(HttpRequest httpRequest) { }
-    			});
-
-		UsercontrollerEndpoint endpoint = CloudEndpointUtils.updateBuilder(endpointBuilder).build();
+		ControllerEndpoint endpoint = getEndpoint();
     	
     	try {
     		result = endpoint.login(username, password).execute();
@@ -37,15 +31,7 @@ public enum EndpointService {
 	
 	public Session register(String username, String password) {
 		Session result = null;
-
-		UsercontrollerEndpoint.Builder endpointBuilder = new UsercontrollerEndpoint.Builder(
-    			AndroidHttp.newCompatibleTransport(),
-    			new JacksonFactory(),
-    			new HttpRequestInitializer() {
-    				public void initialize(HttpRequest httpRequest) { }
-    			});
-
-		UsercontrollerEndpoint endpoint = CloudEndpointUtils.updateBuilder(endpointBuilder).build();
+		ControllerEndpoint endpoint = getEndpoint();
     	
     	try {
     		User user = new User().setUsername(username);
@@ -61,23 +47,39 @@ public enum EndpointService {
 
 	public Game newGame(Session session) {
 		Game result = null;
-		session =  (Session) session;
+		session = (Session) session;
+		ControllerEndpoint endpoint = getEndpoint();
+    	
+    	try {
+    		result = endpoint.newGame(session.getSessionId()).execute();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+
+		return result;
+	}
+	
+	public List<Game> listGames(Session session) {
+		CollectionResponseGame result = new CollectionResponseGame();
+		ControllerEndpoint endpoint = getEndpoint();
+
+		try {
+			result = endpoint.listGame(session.getSessionId()).execute();
+		} catch (IOException e) {
+    		e.printStackTrace();
+    	}
 		
-		UsercontrollerEndpoint.Builder endpointBuilder = new UsercontrollerEndpoint.Builder(
+		return result.getItems();
+	}
+	
+	private ControllerEndpoint getEndpoint() {
+		ControllerEndpoint.Builder endpointBuilder = new ControllerEndpoint.Builder(
     			AndroidHttp.newCompatibleTransport(),
     			new JacksonFactory(),
     			new HttpRequestInitializer() {
     				public void initialize(HttpRequest httpRequest) { }
     			});
 
-		UsercontrollerEndpoint endpoint = CloudEndpointUtils.updateBuilder(endpointBuilder).build();
-    	
-    	try {
-    		result = endpoint.newGame(session).execute();
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
-
-		return result;
+		return CloudEndpointUtils.updateBuilder(endpointBuilder).build();
 	}
 }

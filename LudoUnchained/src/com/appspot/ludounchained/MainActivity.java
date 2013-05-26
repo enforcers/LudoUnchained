@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 
-import com.appspot.ludounchained.usercontrollerEndpoint.model.Session;
+import com.appspot.ludounchained.controllerEndpoint.model.Session;
 import com.appspot.ludounchained.util.BackgroundTask;
 import com.appspot.ludounchained.util.EndpointService;
 

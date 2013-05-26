@@ -5,6 +5,6 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry kind="src" path="endpoint-libs/libusercontrollerEndpoint-v1/usercontrollerEndpoint/usercontrollerendpoint-v1-generated-source"/>
+	<classpathentry kind="src" path="endpoint-libs/libcontrollerEndpoint-v1/controllerEndpoint/controllerendpoint-v1-generated-source"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

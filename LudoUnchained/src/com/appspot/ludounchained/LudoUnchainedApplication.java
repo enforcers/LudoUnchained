@@ -1,8 +1,8 @@
 package com.appspot.ludounchained;
 
-import com.appspot.ludounchained.usercontrollerEndpoint.model.Game;
-import com.appspot.ludounchained.usercontrollerEndpoint.model.Session;
-import com.appspot.ludounchained.usercontrollerEndpoint.model.User;
+import com.appspot.ludounchained.controllerEndpoint.model.Game;
+import com.appspot.ludounchained.controllerEndpoint.model.Session;
+import com.appspot.ludounchained.controllerEndpoint.model.User;
 
 import android.app.Application;
 import android.content.Context;

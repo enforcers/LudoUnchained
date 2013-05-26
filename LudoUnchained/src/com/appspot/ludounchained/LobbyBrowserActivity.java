@@ -1,15 +1,31 @@
 package com.appspot.ludounchained;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.appspot.ludounchained.controllerEndpoint.model.Game;
+import com.appspot.ludounchained.util.BackgroundTask;
+import com.appspot.ludounchained.util.EndpointService;
+
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class LobbyBrowserActivity extends Activity {
 	protected LudoUnchainedApplication appState;
+	protected ListView mLobbyOverview;
+	protected ArrayList<Game> mLobbyList = new ArrayList<Game>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -18,8 +34,9 @@ public class LobbyBrowserActivity extends Activity {
 		
 		appState = (LudoUnchainedApplication) getApplicationContext();
 		
-		TextView sessionView = (TextView) findViewById(R.id.session_display);
-		sessionView.setText(appState.getSession().toString());
+		mLobbyOverview = (ListView) findViewById(R.id.lobby_overview);
+		Log.v("SESSION", "S:" + appState.getSession().toString());
+		fillGameOverview();
 	}
 
 	@Override
@@ -29,6 +46,88 @@ public class LobbyBrowserActivity extends Activity {
 		return true;
 	}
 	
+	public void refreshGames(MenuItem m) {
+		fillGameOverview();
+	}
+	
+	public void newGame(MenuItem m) {
+		new BackgroundTask().new Task(this) {
+			@Override
+			protected Object doInBackground(Void... params) {
+				return EndpointService.CALL.newGame(appState.getSession());
+			}
+			
+			@Override
+			protected void onPostExecute(final Object result) {
+				super.onPostExecute(result);
+				
+				if (result != null) {
+					Game game = (Game)result;
+					appState.setGame(game);
+					Log.v("NEW GAME", game.toString());
+				}
+			}
+		}.execute();
+	}
+
+	private void fillGameOverview() {
+		new BackgroundTask().new Task(this) {
+			@Override
+			protected Object doInBackground(Void... params) {
+				return EndpointService.CALL.listGames(appState.getSession());
+			}
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			protected void onPostExecute(final Object result) {
+				super.onPostExecute(result);
+				
+				if (result != null) {
+					List<Game> games = (List<Game>)result;
+					Log.v("LIST LOBBY COUNT", games.size() + " ");
+					
+					GameListAdapter gameListAdapter = new GameListAdapter(getApplicationContext(), games);
+					mLobbyOverview.setAdapter(gameListAdapter);
+				}
+			}
+		}.execute();		
+	}
+	
+	public class GameListAdapter extends ArrayAdapter<Game> {
+		private final Context context;
+		private final List<Game> objects;
+
+		public GameListAdapter(Context context, List<Game> objects) {
+			super(context, R.layout.lobby_row, objects);
+			this.context = context;
+			this.objects = objects;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			LayoutInflater inflater = (LayoutInflater) context
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			View rowView = inflater.inflate(R.layout.lobby_row, parent, false);
+			TextView lobbyName = (TextView) rowView.findViewById(R.id.lobby_user_cell);
+			TextView lobbyPlayers = (TextView) rowView.findViewById(R.id.lobby_players_cell);
+			
+			String gameName = "Closed";
+			int playerCount = 0;
+
+			try {
+				gameName = objects.get(position).getGameLeader().getUsername() + "'s Game";
+				playerCount = objects.get(position).getUsers().size();
+			} catch (Exception e) {
+				
+			}
+			lobbyName.setText(gameName);
+			lobbyPlayers.setText(playerCount + "/4");
+			
+			return rowView;
+		}
+		
+	}
+	
 	public void flushPreferences(View v) {
 		SharedPreferences settings = getSharedPreferences("auth", 0);
 		settings.edit().clear().commit();
@@ -36,5 +135,4 @@ public class LobbyBrowserActivity extends Activity {
 		startActivity(new Intent(getApplicationContext(), MainActivity.class));
 		finish();
 	}
-
 }

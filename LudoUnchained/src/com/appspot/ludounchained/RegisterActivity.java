@@ -1,6 +1,6 @@
 package com.appspot.ludounchained;
 
-import com.appspot.ludounchained.usercontrollerEndpoint.model.Session;
+import com.appspot.ludounchained.controllerEndpoint.model.Session;
 import com.appspot.ludounchained.util.BackgroundTask;
 import com.appspot.ludounchained.util.EndpointService;
 
