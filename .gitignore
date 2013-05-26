@@ -4,5 +4,5 @@
 *.jar
 *.war
 *.ear
-#.metadata
-#/LudoUnchained/endpoint-libs
+.metadata
+/LudoUnchained-Android/endpoint-libs
