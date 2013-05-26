@@ -1,0 +1,11 @@
+<resources>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="black">#000000</color>
+    <color name="player_yellow">#FFFF00</color>
+    <color name="player_red">#FF0000</color>
+    <color name="player_blue">#0000FF</color>
+    <color name="player_green">#00FF00</color>
+    <color name="blood_red">#cc0000</color>
+
+</resources>

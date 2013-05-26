@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_activity_login">Login to your Account</string>
+    <string name="remember_me">Remember me</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="link_to_register">New? Register here</string>
+    <string name="login_failure">Wrong credentials. Try again or register</string>
+
+</resources>

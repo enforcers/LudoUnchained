@@ -1,0 +1,23 @@
+# view AndroidManifest.xml #generated:65
+-keep class com.appspot.ludounchained.LobbyBrowserActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:42
+-keep class com.appspot.ludounchained.LoginActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:23
+-keep class com.appspot.ludounchained.LudoUnchainedApplication { <init>(...); }
+
+# view AndroidManifest.xml #generated:29
+-keep class com.appspot.ludounchained.MainActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:38
+-keep class com.appspot.ludounchained.RegisterActivity { <init>(...); }
+
+# onClick res/layout/activity_login.xml #generated:67
+# onClick res/layout/activity_register.xml #generated:68
+-keepclassmembers class * { *** doLogin(...); }
+
+# onClick res/layout/activity_login.xml #generated:76
+# onClick res/layout/activity_register.xml #generated:59
+-keepclassmembers class * { *** doRegister(...); }
+
