@@ -3,8 +3,7 @@ package com.appspot.ludounchained;
 import java.util.Random;
 
 public class Dice {
-	public static int roll(){
-		Random random = new Random();
-		return random.nextInt(5) + 1;
-	}
+	private Random random = new Random();
+	int value = random.nextInt(5) + 1;
 }
+

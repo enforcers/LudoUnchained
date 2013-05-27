@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.appspot.ludounchained.controllerEndpoint.ControllerEndpoint;
+import com.appspot.ludounchained.controllerEndpoint.ControllerEndpoint.RollDice;
 import com.appspot.ludounchained.controllerEndpoint.model.CollectionResponseGame;
 import com.appspot.ludounchained.controllerEndpoint.model.Game;
 import com.appspot.ludounchained.controllerEndpoint.model.Session;
@@ -81,6 +82,18 @@ public enum EndpointService {
     	}
 		
 		return result.getItems();
+	}
+	
+	public RollDice rollDice(){
+		RollDice dice = null;
+		ControllerEndpoint endpoint = getEndpoint();
+    	try {
+    		dice = endpoint.rollDice();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+
+		return dice;
 	}
 	
 	private ControllerEndpoint getEndpoint() {

@@ -134,7 +134,6 @@ public class ControllerEndpoint {
 
 		return game;
 	}
-
 	@ApiMethod(name = "joinGame")
 	public Game joinGame(
 			@Named("sessionId") String sessionId,
@@ -153,6 +152,12 @@ public class ControllerEndpoint {
 		return game;
 	}
 
+	
+	@ApiMethod(name = "rollDice")
+	public Dice rollDice(){
+		Dice dice = new Dice();
+		return dice;
+	}
 	private boolean containsUser(User user) {
 		EntityManager mgr = getEntityManager();
 		boolean contains = true;
@@ -205,8 +210,5 @@ public class ControllerEndpoint {
 
 	private static EntityManager getEntityManager() {
 		return EMF.get().createEntityManager();
-	}
-	public int rollDice(){
-		return Dice.roll();
 	}
 }
