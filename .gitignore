@@ -1,8 +1,9 @@
 *.class
 
 # Package Files #
-#*.jar
+*.jar
 *.war
 *.ear
 .metadata
 /LudoUnchained-Android/endpoint-libs
+/LudoUnchained-Android/bin
