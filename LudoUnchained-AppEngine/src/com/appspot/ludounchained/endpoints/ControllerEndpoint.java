@@ -12,6 +12,7 @@ import com.appspot.ludounchained.model.Game;
 import com.appspot.ludounchained.model.Session;
 import com.appspot.ludounchained.model.User;
 import com.appspot.ludounchained.util.MD5;
+import com.appspot.ludounchained.Dice;
 import com.appspot.ludounchained.EMF;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -170,5 +171,8 @@ public class ControllerEndpoint {
 
 	private static EntityManager getEntityManager() {
 		return EMF.get().createEntityManager();
+	}
+	public int rollDice(){
+		return Dice.roll();
 	}
 }
