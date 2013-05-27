@@ -29,6 +29,17 @@ public enum EndpointService {
     	return result;
 	}
 	
+	public void logout(Session session) {
+		ControllerEndpoint endpoint = getEndpoint();
+    	
+    	try {
+    		endpoint.logout(session.getSessionId()).execute();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+    	
+	}
+	
 	public Session register(String username, String password) {
 		Session result = null;
 		ControllerEndpoint endpoint = getEndpoint();

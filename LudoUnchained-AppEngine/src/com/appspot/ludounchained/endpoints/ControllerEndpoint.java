@@ -19,15 +19,20 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.datanucleus.query.JPACursorHelper;
 
 @Api(name = "controllerEndpoint", namespace = @ApiNamespace(ownerDomain = "appspot.com", ownerName = "appspot.com", packagePath = "ludounchained"))
 public class ControllerEndpoint {
 
 	@ApiMethod(name = "login")
-	public Session login(@Named("username") String username, @Named("password") String password) {
+	public Session login(
+			@Named("username") String username,
+			@Named("password") String password)
+	{
 		EntityManager mgr = getEntityManager();
 		User user = null;
+
 		try {
 			user = mgr.find(User.class, username);
 		} finally {
@@ -38,6 +43,20 @@ public class ControllerEndpoint {
 			return getSession(user);
 		} else {
 			return null;
+		}
+	}
+	
+	@ApiMethod(name = "logout")
+	public void logout(
+			@Named("sessionId") String sessionId)
+	{
+		EntityManager mgr = getEntityManager();
+		Session session = null;
+		try {
+			session = mgr.find(Session.class, sessionId);
+			mgr.remove(session);
+		} finally {
+			mgr.close();
 		}
 	}
 	
@@ -115,7 +134,25 @@ public class ControllerEndpoint {
 
 		return game;
 	}
-	
+
+	@ApiMethod(name = "joinGame")
+	public Game joinGame(
+			@Named("sessionId") String sessionId,
+			Key gameId) {
+		Session session = validateSession(sessionId);
+		Game game = null;
+		
+		EntityManager mgr = getEntityManager();
+		try {
+			game = mgr.find(Game.class, gameId);
+			game.addSpectator(session.getUser());
+		} finally {
+			mgr.close();
+		}
+		
+		return game;
+	}
+
 	private boolean containsUser(User user) {
 		EntityManager mgr = getEntityManager();
 		boolean contains = true;
@@ -161,9 +198,6 @@ public class ControllerEndpoint {
 		
 		if (result == null) {
 			//throw new Exception("Invalid session");
-			/**
-			 * Implement global exception handling 
-			 */
 		}
 		
 		return result;

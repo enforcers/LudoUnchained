@@ -39,7 +39,8 @@ public class RegisterActivity extends Activity {
 	}
 	
 	public void doLogin(View v) {
-		
+		startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+		finish();
 	}
 	
 	public void doRegister(View v) {

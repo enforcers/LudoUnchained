@@ -110,16 +110,11 @@ public class LobbyBrowserActivity extends Activity {
 			View rowView = inflater.inflate(R.layout.lobby_row, parent, false);
 			TextView lobbyName = (TextView) rowView.findViewById(R.id.lobby_user_cell);
 			TextView lobbyPlayers = (TextView) rowView.findViewById(R.id.lobby_players_cell);
-			
-			String gameName = "Closed";
-			int playerCount = 0;
 
-			try {
-				gameName = objects.get(position).getGameLeader().getUsername() + "'s Game";
-				playerCount = objects.get(position).getUsers().size();
-			} catch (Exception e) {
-				
-			}
+			Game game = objects.get(position);
+			String gameName = game.getRedPlayer().getUsername() + "'s Game";
+			int playerCount = game.getPlayerCount();
+
 			lobbyName.setText(gameName);
 			lobbyPlayers.setText(playerCount + "/4");
 			
@@ -128,11 +123,24 @@ public class LobbyBrowserActivity extends Activity {
 		
 	}
 	
-	public void flushPreferences(View v) {
-		SharedPreferences settings = getSharedPreferences("auth", 0);
-		settings.edit().clear().commit();
-		
-		startActivity(new Intent(getApplicationContext(), MainActivity.class));
-		finish();
+	public void logout(MenuItem m) {
+		new BackgroundTask().new SilentTask() {
+			@Override
+			protected Object doInBackground(Void... params) {
+				EndpointService.CALL.logout(appState.getSession());
+				return null;
+			}
+			
+			@Override
+			protected void onPostExecute(final Object result) {
+				super.onPostExecute(result);
+
+				SharedPreferences settings = getSharedPreferences("auth", 0);
+				settings.edit().clear().commit();
+				
+				startActivity(new Intent(getApplicationContext(), MainActivity.class));
+				finish();
+			}
+		}.execute();
 	}
 }

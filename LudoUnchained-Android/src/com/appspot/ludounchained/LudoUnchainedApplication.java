@@ -8,7 +8,7 @@ import android.app.Application;
 import android.content.Context;
 
 public class LudoUnchainedApplication extends Application {
-	private Session loginSession;
+	private Session session;
 	private User user;
 	private Game game;
 	private static Context mContext;
@@ -24,11 +24,11 @@ public class LudoUnchainedApplication extends Application {
 	}
 	
 	public Session getSession() {
-		return loginSession;
+		return session;
 	}
 	
 	public void setSession(Session session) {
-		this.loginSession = session;
+		this.session = session;
 	}
 	
 	public User getUser() {

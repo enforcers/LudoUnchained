@@ -6,8 +6,8 @@
 *.ear
 .metadata
 .settings
-/LudoUnchained-Android/endpoint-libs
-/LudoUnchained-Android/bin
+/LudoUnchained-Android/endpoint-libs/*
+/LudoUnchained-Android/bin/*.apk
 /LudoUnchained-AppEngine/war/WEB-INF/*.api
 /LudoUnchained-AppEngine/war/WEB-INF/*.discovery
 /LudoUnchained-AppEngine/war/WEB-INF/appengine-generated
