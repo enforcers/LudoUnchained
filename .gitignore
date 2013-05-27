@@ -5,5 +5,9 @@
 *.war
 *.ear
 .metadata
+.settings
 /LudoUnchained-Android/endpoint-libs
 /LudoUnchained-Android/bin
+/LudoUnchained-AppEngine/war/WEB-INF/*.api
+/LudoUnchained-AppEngine/war/WEB-INF/*.discovery
+/LudoUnchained-AppEngine/war/WEB-INF/appengine-generated
