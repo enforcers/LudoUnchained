@@ -74,4 +74,8 @@ public class Session implements Serializable {
 		updatedAt = new Date();
 	}
 	
+	public com.appspot.ludounchained.cvo.Session getCVO() {
+		return new com.appspot.ludounchained.cvo.Session(this);
+	}
+	
 }

@@ -37,5 +37,9 @@ public class User implements Serializable {
 	public void setPassword(String password) {
 		this.password = MD5.encrypt(password);
 	}
+	
+	public com.appspot.ludounchained.cvo.User getCVO() {
+		return new com.appspot.ludounchained.cvo.User(this);
+	}
 
 }

@@ -70,8 +70,8 @@ public class LobbyBrowserActivity extends Activity {
 				
 				if (result != null) {
 					Game game = (Game)result;
-					appState.setGame(game);
-					Log.v("NEW GAME", game.toString());
+					//appState.setGame(game);
+					Log.v("NEW GAMESTATE", game.toString());
 				}
 			}
 		}.execute();

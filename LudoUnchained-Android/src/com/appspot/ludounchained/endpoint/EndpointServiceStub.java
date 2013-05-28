@@ -7,7 +7,6 @@ import com.appspot.ludounchained.controllerEndpoint.ControllerEndpoint;
 import com.appspot.ludounchained.controllerEndpoint.model.CollectionResponseGame;
 import com.appspot.ludounchained.controllerEndpoint.model.Game;
 import com.appspot.ludounchained.controllerEndpoint.model.Session;
-import com.appspot.ludounchained.controllerEndpoint.model.User;
 import com.appspot.ludounchained.exception.InvalidLoginException;
 import com.appspot.ludounchained.exception.RemoteException;
 import com.appspot.ludounchained.util.CloudEndpointUtils;
@@ -50,10 +49,7 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
     	
     	try {
-    		User user = new User().setUsername(username);
-    		user.setPassword(password);
-
-    		result = endpoint.register(user).execute();
+    		result = endpoint.register(username, password).execute();
     	} catch (IOException e) {
     		e.printStackTrace();
     	}

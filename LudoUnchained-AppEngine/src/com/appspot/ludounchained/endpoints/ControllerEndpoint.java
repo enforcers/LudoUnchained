@@ -1,5 +1,6 @@
 package com.appspot.ludounchained.endpoints;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -8,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import com.appspot.ludounchained.model.Game;
+import com.appspot.ludounchained.model.GameState;
 import com.appspot.ludounchained.model.Session;
 import com.appspot.ludounchained.model.User;
 import com.appspot.ludounchained.util.MD5;
@@ -24,7 +26,7 @@ import com.google.appengine.datanucleus.query.JPACursorHelper;
 public class ControllerEndpoint {
 
 	@ApiMethod(name = "login")
-	public Session login(
+	public com.appspot.ludounchained.cvo.Session login(
 			@Named("username") String username,
 			@Named("password") String password)
 	{
@@ -38,7 +40,7 @@ public class ControllerEndpoint {
 		}
 
 		if (user != null && user.getPassword().equals(MD5.encrypt(password))) {
-			return getSession(user);
+			return getSession(user).getCVO();
 		} else {
 			return null;
 		}
@@ -59,17 +61,26 @@ public class ControllerEndpoint {
 	}
 	
 	@ApiMethod(name = "register")
-	public Session register(User user) {
+	public com.appspot.ludounchained.cvo.Session register(
+			@Named("username") String username,
+			@Named("password") String password)
+	{
 		EntityManager mgr = getEntityManager();
 
-		if (!containsUser(user)) {
+		if (!containsUser(username)) {
+			User user = null;
+
 			try {
+				user = new User();
+				user.setUsername(username);
+				user.setPassword(password);
+
 				mgr.persist(user);
 			} finally {
 				mgr.close();
 			}
 			
-			return getSession(user);
+			return getSession(user).getCVO();
 		}
 		
 		return null;
@@ -77,7 +88,7 @@ public class ControllerEndpoint {
 
 	@SuppressWarnings({ "unchecked", "unused" })
 	@ApiMethod(name = "listGame")
-	public CollectionResponse<Game> listGame(
+	public CollectionResponse<com.appspot.ludounchained.cvo.Game> listGame(
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("limit") Integer limit,
 			@Named("sessionId") String sessionId) {
@@ -87,6 +98,7 @@ public class ControllerEndpoint {
 		EntityManager mgr = null;
 		Cursor cursor = null;
 		List<Game> execute = null;
+		List<com.appspot.ludounchained.cvo.Game> result = new ArrayList<com.appspot.ludounchained.cvo.Game>();
 		
 		try {
 			mgr = getEntityManager();
@@ -108,56 +120,69 @@ public class ControllerEndpoint {
 			
 			// Tight loop for fetching all entities from datastore and accomodate
 			// for lazy fetch.
-			for (Game obj : execute)
-				;
+			for (Game obj : execute) {
+				result.add(obj.getCVO());
+			}
 		} finally {
 			mgr.close();
 		}
 		
-		return CollectionResponse.<Game> builder().setItems(execute)
+		return CollectionResponse.<com.appspot.ludounchained.cvo.Game> builder().setItems(result)
 				.setNextPageToken(cursorString).build();
 	}
 
 	@ApiMethod(name = "newGame")
-	public Game newGame(@Named("sessionId") String sessionId) {
+	public com.appspot.ludounchained.cvo.Game newGame(@Named("sessionId") String sessionId) {
 		Session session = validateSession(sessionId);
 		Game game = null;
+		com.appspot.ludounchained.cvo.Game result = null;
 
 		EntityManager mgr = getEntityManager();
+
 		try {
 			game = new Game(session.getUser());
 			mgr.persist(game);
+			//gameState = game.getGameState();
 		} finally {
 			mgr.close();
 		}
+		
+		result = game.getCVO();
+		result.setGameState(game.getGameState().getCVO());
 
-		return game;
+		return result;
+
 	}
 
 	@ApiMethod(name = "joinGame")
-	public Game joinGame(
+	public com.appspot.ludounchained.cvo.GameState joinGame(
 			@Named("sessionId") String sessionId,
 			Key gameId) {
 		Session session = validateSession(sessionId);
-		Game game = null;
+		GameState gameState = null;
 		
 		EntityManager mgr = getEntityManager();
 		try {
-			game = mgr.find(Game.class, gameId);
+			Game game = mgr.find(Game.class, gameId);
 			game.addSpectator(session.getUser());
+			gameState = game.getGameState();
 		} finally {
 			mgr.close();
 		}
 		
-		return game;
+		if (gameState != null) {
+			return gameState.getCVO();
+		} else {
+			return null;
+		}
 	}
 
-	private boolean containsUser(User user) {
+	private boolean containsUser(String username) {
 		EntityManager mgr = getEntityManager();
 		boolean contains = true;
 
 		try {
-			User item = mgr.find(User.class, user.getUsername());
+			User item = mgr.find(User.class, username);
 			if (item == null) {
 				contains = false;
 			}

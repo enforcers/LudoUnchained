@@ -4,13 +4,16 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
+import com.appspot.ludounchained.util.PlayerColor;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.datanucleus.annotations.Unowned;
 
@@ -19,8 +22,6 @@ public class Game implements Serializable {
 
 	private static final long serialVersionUID = -8472403885032549742L;
 	
-	public enum Color { RED, BLUE, GREEN, YELLOW };
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key gameId;
@@ -33,20 +34,24 @@ public class Game implements Serializable {
 	@Unowned
 	@OneToMany(fetch = FetchType.EAGER)
 	List<User> spectators;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	private GameState gameState;
 
 	public Game() {
 		super();
 	}
 	
 	public Game(User user) {
-		addPlayer(Color.RED, user);
+		addPlayer(PlayerColor.RED, user);
+		this.gameState = new GameState();
 	} 
 	
 	public Key getGameId() {
 		return gameId;
 	}
 	
-	public void addPlayer(Color color, User user) {
+	public void addPlayer(PlayerColor color, User user) {
 		switch (color) {
 			case RED    : setRedPlayer(user); break;
 			case BLUE   : setBluePlayer(user); break;
@@ -55,7 +60,7 @@ public class Game implements Serializable {
 		}
 	}
 	
-	public User getPlayer(Color color) {
+	public User getPlayer(PlayerColor color) {
 		switch (color) {
 			case RED    : return getRedPlayer();
 			case BLUE   : return getBluePlayer();
@@ -76,6 +81,10 @@ public class Game implements Serializable {
 	
 	public List<User> getSpectators() {
 		return spectators;
+	}
+	
+	public GameState getGameState() {
+		return gameState;
 	}
 	
 	public void setSpectators(List<User> spectators) {
@@ -116,5 +125,9 @@ public class Game implements Serializable {
 	
 	public void setYellowPlayer(User user) {
 		this.yellowPlayer = user;
+	}
+	
+	public com.appspot.ludounchained.cvo.Game getCVO() {
+		return new com.appspot.ludounchained.cvo.Game(this);
 	}
 }
