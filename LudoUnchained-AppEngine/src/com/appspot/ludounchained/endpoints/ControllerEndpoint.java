@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -12,7 +11,6 @@ import com.appspot.ludounchained.model.Game;
 import com.appspot.ludounchained.model.Session;
 import com.appspot.ludounchained.model.User;
 import com.appspot.ludounchained.util.MD5;
-import com.appspot.ludounchained.Dice;
 import com.appspot.ludounchained.EMF;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -63,17 +61,18 @@ public class ControllerEndpoint {
 	@ApiMethod(name = "register")
 	public Session register(User user) {
 		EntityManager mgr = getEntityManager();
-		try {
-			if (containsUser(user)) {
-				throw new EntityExistsException("Object already exists");
+
+		if (!containsUser(user)) {
+			try {
+				mgr.persist(user);
+			} finally {
+				mgr.close();
 			}
-
-			mgr.persist(user);
-		} finally {
-			mgr.close();
+			
+			return getSession(user);
 		}
-
-		return getSession(user);
+		
+		return null;
 	}
 
 	@SuppressWarnings({ "unchecked", "unused" })
@@ -192,12 +191,9 @@ public class ControllerEndpoint {
 
 		try {
 			result = mgr.find(Session.class, sessionId);
+			result.setUpdatedAt();
 		} finally {
 			mgr.close();
-		}
-		
-		if (result == null) {
-			//throw new Exception("Invalid session");
 		}
 		
 		return result;
@@ -205,8 +201,5 @@ public class ControllerEndpoint {
 
 	private static EntityManager getEntityManager() {
 		return EMF.get().createEntityManager();
-	}
-	public int rollDice(){
-		return Dice.roll();
 	}
 }

@@ -55,6 +55,14 @@
 		        android:layout_marginTop="25dp"
 		        android:layout_marginBottom="15dp"
 		        android:text="@string/remember_me" />
+		    
+		    <TextView
+		        android:id="@+id/register_failure_text"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/register_failure"
+		        android:textColor="@color/blood_red"
+		        android:visibility="gone" />
 		
 			<Button
 			    android:id="@+id/register_sign_up"

@@ -70,7 +70,7 @@ public class Session implements Serializable {
 	}
 	
 	@PreUpdate
-	private void setUpdatedAt() {
+	public void setUpdatedAt() {
 		updatedAt = new Date();
 	}
 	

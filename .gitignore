@@ -8,6 +8,7 @@
 .settings
 /LudoUnchained-Android/endpoint-libs/*
 /LudoUnchained-Android/bin/*
+/LudoUnchained-Android/gen/*
 /LudoUnchained-AppEngine/war/WEB-INF/*.api
 /LudoUnchained-AppEngine/war/WEB-INF/*.discovery
-/LudoUnchained-AppEngine/war/WEB-INF/appengine-generated
+/LudoUnchained-AppEngine/war/WEB-INF/appengine-generated/*

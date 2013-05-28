@@ -1,8 +1,8 @@
 package com.appspot.ludounchained;
 
 import com.appspot.ludounchained.controllerEndpoint.model.Session;
+import com.appspot.ludounchained.exception.RemoteException;
 import com.appspot.ludounchained.util.BackgroundTask;
-import com.appspot.ludounchained.util.EndpointService;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -12,12 +12,14 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class LoginActivity extends Activity {
 	protected LudoUnchainedApplication appState;
 	protected EditText mUsername;
 	protected EditText mPassword;
 	protected CheckBox mRememberMe;
+	protected TextView mLoginFailureText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class LoginActivity extends Activity {
 		mUsername = (EditText) findViewById(R.id.login_username);
 		mPassword = (EditText) findViewById(R.id.login_password);
 		mRememberMe = (CheckBox) findViewById(R.id.login_remember_me);
+		mLoginFailureText = (TextView) findViewById(R.id.login_failure_text);
 	}
 
 	@Override
@@ -41,11 +44,18 @@ public class LoginActivity extends Activity {
 	public void doLogin(View v) {
 		final String username = mUsername.getText().toString();
 		final String password = mPassword.getText().toString();
+		
+		mLoginFailureText.setVisibility(TextView.GONE);
 
 		new BackgroundTask().new Task(this) {
 			@Override
 			protected Object doInBackground(Void... params) {
-				return EndpointService.CALL.login(username, password);
+
+				try {
+					return appState.getEndpoint().login(username, password);
+				} catch (RemoteException e) {
+					return null;
+				}
 			}
 			
 			@Override
@@ -69,6 +79,8 @@ public class LoginActivity extends Activity {
 					
 					startActivity(new Intent(getApplicationContext(), LobbyBrowserActivity.class));
 					finish();
+				} else {
+					mLoginFailureText.setVisibility(TextView.VISIBLE);
 				}
 			}
 		}.execute();

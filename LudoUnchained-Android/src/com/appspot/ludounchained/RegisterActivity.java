@@ -1,8 +1,8 @@
 package com.appspot.ludounchained;
 
 import com.appspot.ludounchained.controllerEndpoint.model.Session;
+import com.appspot.ludounchained.exception.RemoteException;
 import com.appspot.ludounchained.util.BackgroundTask;
-import com.appspot.ludounchained.util.EndpointService;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -12,12 +12,14 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class RegisterActivity extends Activity {
 	protected LudoUnchainedApplication appState;
 	protected EditText mUsername;
 	protected EditText mPassword;
 	protected CheckBox mRememberMe;
+	protected TextView mRegisterFailureText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class RegisterActivity extends Activity {
 		mUsername = (EditText) findViewById(R.id.register_username);
 		mPassword = (EditText) findViewById(R.id.register_password);
 		mRememberMe = (CheckBox) findViewById(R.id.register_remember_me);
+		mRegisterFailureText = (TextView) findViewById(R.id.register_failure_text);
 	}
 
 	@Override
@@ -46,11 +49,17 @@ public class RegisterActivity extends Activity {
 	public void doRegister(View v) {
 		final String username = mUsername.getText().toString();
 		final String password = mPassword.getText().toString();
+		
+		mRegisterFailureText.setVisibility(TextView.GONE);
 
 		new BackgroundTask().new Task(this) {
 			@Override
 			protected Object doInBackground(Void... params) {
-				return EndpointService.CALL.register(username, password);
+				try {
+					return appState.getEndpoint().register(username, password);
+				} catch (RemoteException e) {
+					return null;
+				}
 			}
 			
 			@Override
@@ -75,7 +84,7 @@ public class RegisterActivity extends Activity {
 					startActivity(new Intent(getApplicationContext(), LobbyBrowserActivity.class));
 					finish();
 				} else {
-					// failed
+					mRegisterFailureText.setVisibility(TextView.VISIBLE);
 				}
 			}
 		}.execute();

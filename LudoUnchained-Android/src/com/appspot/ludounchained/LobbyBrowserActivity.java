@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.appspot.ludounchained.controllerEndpoint.model.Game;
+import com.appspot.ludounchained.exception.RemoteException;
 import com.appspot.ludounchained.util.BackgroundTask;
-import com.appspot.ludounchained.util.EndpointService;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -54,7 +54,14 @@ public class LobbyBrowserActivity extends Activity {
 		new BackgroundTask().new Task(this) {
 			@Override
 			protected Object doInBackground(Void... params) {
-				return EndpointService.CALL.newGame(appState.getSession());
+				try {
+					return appState.getEndpoint().newGame(appState.getSession());
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				return null;
 			}
 			
 			@Override
@@ -74,7 +81,14 @@ public class LobbyBrowserActivity extends Activity {
 		new BackgroundTask().new Task(this) {
 			@Override
 			protected Object doInBackground(Void... params) {
-				return EndpointService.CALL.listGames(appState.getSession());
+				try {
+					return appState.getEndpoint().listGames(appState.getSession());
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				return null;
 			}
 			
 			@SuppressWarnings("unchecked")
@@ -127,7 +141,13 @@ public class LobbyBrowserActivity extends Activity {
 		new BackgroundTask().new SilentTask() {
 			@Override
 			protected Object doInBackground(Void... params) {
-				EndpointService.CALL.logout(appState.getSession());
+				try {
+					appState.getEndpoint().logout(appState.getSession());
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				return null;
 			}
 			

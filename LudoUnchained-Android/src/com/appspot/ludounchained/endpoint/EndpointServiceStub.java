@@ -1,4 +1,4 @@
-package com.appspot.ludounchained.util;
+package com.appspot.ludounchained.endpoint;
 
 import java.io.IOException;
 import java.util.List;
@@ -8,15 +8,17 @@ import com.appspot.ludounchained.controllerEndpoint.model.CollectionResponseGame
 import com.appspot.ludounchained.controllerEndpoint.model.Game;
 import com.appspot.ludounchained.controllerEndpoint.model.Session;
 import com.appspot.ludounchained.controllerEndpoint.model.User;
+import com.appspot.ludounchained.exception.InvalidLoginException;
+import com.appspot.ludounchained.exception.RemoteException;
+import com.appspot.ludounchained.util.CloudEndpointUtils;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.jackson.JacksonFactory;
 
-public enum EndpointService {
-	CALL;
+public class EndpointServiceStub implements EndpointService {
 	
-	public Session login (String username, String password) {
+	public Session login (String username, String password) throws RemoteException {
 		Session result = null;
 		ControllerEndpoint endpoint = getEndpoint();
     	
@@ -25,7 +27,10 @@ public enum EndpointService {
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
-    	
+
+    	if (result == null)
+    		throw new InvalidLoginException("Login credentials are invalid");
+
     	return result;
 	}
 	

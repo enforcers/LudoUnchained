@@ -9,8 +9,8 @@ import android.view.Menu;
 import android.widget.TextView;
 
 import com.appspot.ludounchained.controllerEndpoint.model.Session;
+import com.appspot.ludounchained.exception.RemoteException;
 import com.appspot.ludounchained.util.BackgroundTask;
-import com.appspot.ludounchained.util.EndpointService;
 
 public class MainActivity extends Activity {
 	protected LudoUnchainedApplication appState;
@@ -34,7 +34,14 @@ public class MainActivity extends Activity {
 			new BackgroundTask().new SilentTask() {
 				@Override
 				protected Object doInBackground(Void... params) {
-					return EndpointService.CALL.login(username, password);
+					try {
+						return appState.getEndpoint().login(username, password);
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					return null;
 				}
 				
 				@Override
@@ -66,25 +73,4 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-/*	
-	public void doNewGame(View v) {
-		new BackgroundTask().new Task(this) {
-			@Override
-			protected Object doInBackground(Void... params) {
-				return EndpointService.CALL.newGame(mLoginSession);
-			}
-			
-			@Override
-			protected void onPostExecute(final Object result) {
-				super.onPostExecute(result);
-				
-				if (result != null) {
-					Game game = (Game)result;
-					
-					Log.v("NEW GAME", game.toString());
-				}
-			}
-		}.execute();
-	}
-*/
 }
