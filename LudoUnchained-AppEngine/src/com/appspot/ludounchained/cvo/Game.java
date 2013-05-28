@@ -38,8 +38,10 @@ public class Game implements Serializable {
 				yellowPlayer = new User(game.getYellowPlayer());
 			
 			spectators = new ArrayList<User>();
-			for (com.appspot.ludounchained.model.User obj : game.getSpectators()) {
-				spectators.add(new User(obj));
+			if (game.getSpectators() != null) {
+				for (com.appspot.ludounchained.model.User obj : game.getSpectators()) {
+					spectators.add(new User(obj));
+				}
 			}
 		}
 	} 
