@@ -1,11 +1,14 @@
 package com.appspot.ludounchained.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +25,8 @@ public class Game implements Serializable {
 
 	private static final long serialVersionUID = -8472403885032549742L;
 	
+	public enum State { LOBBY, RUNNING, FINISHED };
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key gameId;
@@ -37,21 +42,55 @@ public class Game implements Serializable {
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	private GameState gameState;
+	
+	@Enumerated(EnumType.STRING)
+	private State state;
+	
+	@Enumerated(EnumType.STRING)
+	private PlayerColor turn;
 
 	public Game() {
 		super();
 	}
 	
 	public Game(User user) {
-		addPlayer(PlayerColor.RED, user);
-		this.gameState = new GameState();
+		setPlayer(PlayerColor.RED, user);
+		turn = PlayerColor.RED;
+		state = State.LOBBY;
+		gameState = new GameState();
 	} 
 	
 	public Key getGameId() {
 		return gameId;
 	}
 	
-	public void addPlayer(PlayerColor color, User user) {
+	public List<User> getPlayers() {
+		List<User> result = new ArrayList<User>();
+		result.add(getRedPlayer());
+		result.add(getBluePlayer());
+		result.add(getGreenPlayer());
+		result.add(getYellowPlayer());
+		
+		return result;
+	}
+	
+	public PlayerColor getPlayerColor(User user) {
+		if (getRedPlayer().equals(user))
+			return PlayerColor.RED;
+		
+		if (getBluePlayer().equals(user))
+			return PlayerColor.BLUE;
+		
+		if (getGreenPlayer().equals(user))
+			return PlayerColor.GREEN;
+		
+		if (getYellowPlayer().equals(user))
+			return PlayerColor.YELLOW;
+		
+		return null;
+	}
+	
+	public void setPlayer(PlayerColor color, User user) {
 		switch (color) {
 			case RED    : setRedPlayer(user); break;
 			case BLUE   : setBluePlayer(user); break;
@@ -87,12 +126,23 @@ public class Game implements Serializable {
 		return gameState;
 	}
 	
+	public void setGameState(State state) {
+		this.state = state;
+	}
+	
 	public void setSpectators(List<User> spectators) {
 		this.spectators = spectators;
 	}
 	
 	public void addSpectator(User user) {
+		if (spectators == null)
+			spectators = new ArrayList<User>();
+
 		spectators.add(user);
+	}
+	
+	public void removeSpectator(User user) {
+		spectators.remove(user);
 	}
 	
 	public User getRedPlayer() {
@@ -125,6 +175,22 @@ public class Game implements Serializable {
 	
 	public void setYellowPlayer(User user) {
 		this.yellowPlayer = user;
+	}
+	
+	public State getState() {
+		return state;
+	}
+	
+	public void setState(State state) {
+		this.state = state;
+	}
+	
+	public PlayerColor getTurn() {
+		return turn;
+	}
+	
+	public void setTurn(PlayerColor turn) {
+		this.turn = turn;
 	}
 	
 	public com.appspot.ludounchained.cvo.Game getCVO() {

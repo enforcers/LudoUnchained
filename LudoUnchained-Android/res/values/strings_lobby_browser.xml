@@ -7,5 +7,6 @@
     <string name="action_logout">Logout</string>
     <string name="lobby_user_cell_head">User</string>
     <string name="lobby_players_cell_head">Players</string>
+    <string name="lobby_player_none">None</string>
 
 </resources>

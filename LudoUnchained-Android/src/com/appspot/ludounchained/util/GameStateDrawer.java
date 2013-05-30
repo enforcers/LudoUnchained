@@ -1,23 +1,36 @@
 package com.appspot.ludounchained.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
+
+import com.appspot.ludounchained.R;
 import com.appspot.ludounchained.controllerEndpoint.model.Field;
 import com.appspot.ludounchained.controllerEndpoint.model.GameState;
 
-public class GameStateDrawer {
+public class GameStateDrawer extends BaseAdapter {
 	public enum PlayerColor { RED, BLUE, GREEN, YELLOW }
 	
 	private GameState gameState;
+	private Context context;
 
 	private List<Integer> gameFieldMap;
 	private HashMap<PlayerColor, List<Integer>> playerFieldMap;
 	private Field[] fields = new Field[121];
 	private Field[][] fieldMap;
 	
-	public GameStateDrawer(GameState gameState) {
+	public GameStateDrawer(Context context, GameState gameState) {//GameState gameState) {
+		super();
+		
+		this.context = context;
 		this.gameState = gameState;
 		this.gameFieldMap = Arrays.asList(44,45,46,47,48,37,26,15,4,5,6,17,28,39,50,51,52,53,54,65,76,75,74,73,72,83,94,105,116,115,114,103,92,81,70,69,68,67,66,55);
 
@@ -48,8 +61,71 @@ public class GameStateDrawer {
 		}
 	}
 	
+	@Override
+	public int getCount() {
+		return 121;
+	}
+
+	@Override
+	public Object getItem(int position) {
+		return getField(position);
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return 0;
+	}
+	
+	@Override
+	public boolean isEnabled(int position) {
+		return getItem(position) instanceof Field ? true : false;
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		ImageView imageView;
+		if (convertView == null) {  // if it's not recycled
+		    imageView = new ImageView(context);
+		    imageView.setLayoutParams(new GridView.LayoutParams(GridView.LayoutParams.WRAP_CONTENT, GridView.LayoutParams.WRAP_CONTENT));
+		    imageView.setScaleType(ImageView.ScaleType.CENTER);
+		} else {
+		    imageView = (ImageView) convertView;
+		}
+
+		Field field = getField(position);
+
+		int drawableR = R.drawable.game_field_placeholder;
+
+		if (field != null) {
+			switch (GameStateDrawer.PlayerColor.valueOf(field.getColor())) {
+				case BLUE: drawableR = R.drawable.game_field_blue; break;
+				case GREEN: drawableR = R.drawable.game_field_green; break;
+				case RED: drawableR = R.drawable.game_field_red; break;
+				case YELLOW: drawableR = R.drawable.game_field_yellow; break;
+			}
+		} else {
+			if (getGameFieldMap().contains(position) || getAllPlayerFieldMap().contains(position)) {
+				drawableR = R.drawable.game_field_empty;
+			}
+		}
+		
+		imageView.setImageResource(drawableR);
+
+		return imageView;
+	}
+	
 	public List<Integer> getGameFieldMap() {
 		return gameFieldMap;
+	}
+	
+	public List<Integer> getAllPlayerFieldMap() {
+		List<Integer> result = new ArrayList<Integer>();
+		result.addAll(getPlayerFieldMap(PlayerColor.RED));
+		result.addAll(getPlayerFieldMap(PlayerColor.BLUE));
+		result.addAll(getPlayerFieldMap(PlayerColor.GREEN));
+		result.addAll(getPlayerFieldMap(PlayerColor.YELLOW));
+		
+		return result;
 	}
 	
 	public List<Integer> getPlayerFieldMap(PlayerColor color) {
@@ -88,6 +164,10 @@ public class GameStateDrawer {
 	
 	public Field getField(int position) {
 		return fields[position];
+	}
+	
+	public void setGameState(GameState gameState) {
+		this.gameState = gameState;
 	}
 	
 }

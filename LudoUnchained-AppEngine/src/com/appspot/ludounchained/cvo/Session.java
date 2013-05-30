@@ -9,6 +9,7 @@ public class Session implements Serializable {
 
 	private String sessionId;
 	private User user;
+	private String registrationId;
 	private Date createdAt;
 	private Date updatedAt;
 	
@@ -19,6 +20,7 @@ public class Session implements Serializable {
 	public Session(com.appspot.ludounchained.model.Session session) {
 		if (session != null) {
 			sessionId = session.getSessionId();
+			registrationId = session.getRegistrationId();
 			user = new User(session.getUser());
 			createdAt = session.getCreatedAt();
 			updatedAt = session.getUpdatedAt();
@@ -31,6 +33,10 @@ public class Session implements Serializable {
 
 	public User getUser() {
 		return user;
+	}
+	
+	public String getRegistrationId() {
+		return registrationId;
 	}
 
 	public void setUser(User user) {

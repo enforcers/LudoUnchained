@@ -3,18 +3,27 @@ package com.appspot.ludounchained.model;
 import java.io.Serializable;
 
 import javax.persistence.Basic;
-import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 import com.appspot.ludounchained.util.PlayerColor;
+import com.google.appengine.api.datastore.Key;
 
-@Embeddable
+@Entity
 public class Field implements Serializable {
 
 	private static final long serialVersionUID = 5467860780430273931L;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Key fieldId;
+
 	@Basic
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	private PlayerColor color;
 	
 	@Basic

@@ -44,10 +44,9 @@
             android:label="@string/title_activity_login" >
         </activity>
 
-        <!--
-        <service android:name="com.appspot.ludounchained.util.GCMIntentService" />
+        <service android:name="com.appspot.ludounchained.endpoint.GCMIntentService" />
         <receiver
-            android:name="com.google.android.gcm.GCMBroadcastReceiver"
+            android:name="com.appspot.ludounchained.endpoint.GCMReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -59,8 +58,7 @@
 
                 <category android:name="com.appspot.ludounchained" />
             </intent-filter>
-        </receiver>
-        -->
+        </receiver>
         <activity
             android:name="com.appspot.ludounchained.LobbyBrowserActivity"
             android:label="@string/title_activity_lobby_browser" >

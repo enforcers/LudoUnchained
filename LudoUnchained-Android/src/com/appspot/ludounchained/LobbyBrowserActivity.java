@@ -6,6 +6,7 @@ import java.util.List;
 import com.appspot.ludounchained.controllerEndpoint.model.Game;
 import com.appspot.ludounchained.exception.RemoteException;
 import com.appspot.ludounchained.util.BackgroundTask;
+import com.appspot.ludounchained.util.State;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -18,9 +19,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class LobbyBrowserActivity extends Activity {
 	protected LudoUnchainedApplication appState;
@@ -36,9 +40,50 @@ public class LobbyBrowserActivity extends Activity {
 		
 		mLobbyOverview = (ListView) findViewById(R.id.lobby_overview);
 		Log.v("SESSION", "S:" + appState.getSession().toString());
+		//fillGameOverview();
+
+		final LobbyBrowserActivity _this = this;
+		mLobbyOverview.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+				final Game game = (Game) parent.getItemAtPosition(position);
+				
+				new BackgroundTask().new Task(_this) {
+					@Override
+					protected Object doInBackground(Void... params) {
+						try {
+							return appState.getEndpoint().joinGame(game);
+						} catch (RemoteException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						return null;
+					}
+					
+					@Override
+					protected void onPostExecute(final Object result) {
+						super.onPostExecute(result);
+						
+						if (result != null) {
+							Game game = (Game)result;
+							appState.setGame(game);
+							startActivity(new Intent(getApplicationContext(), GameActivity.class));
+						}
+					}
+				}.execute();
+			}
+			
+		});
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
 		fillGameOverview();
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -55,7 +100,7 @@ public class LobbyBrowserActivity extends Activity {
 			@Override
 			protected Object doInBackground(Void... params) {
 				try {
-					return appState.getEndpoint().newGame(appState.getSession());
+					return appState.getEndpoint().newGame();
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -82,7 +127,7 @@ public class LobbyBrowserActivity extends Activity {
 			@Override
 			protected Object doInBackground(Void... params) {
 				try {
-					return appState.getEndpoint().listGames(appState.getSession());
+					return appState.getEndpoint().listGames();
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -116,22 +161,49 @@ public class LobbyBrowserActivity extends Activity {
 			this.context = context;
 			this.objects = objects;
 		}
+		
+		@Override
+		public Game getItem(int position) {
+			return objects.get(position);
+		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View rowView = inflater.inflate(R.layout.lobby_row, parent, false);
-			TextView lobbyName = (TextView) rowView.findViewById(R.id.lobby_user_cell);
-			TextView lobbyPlayers = (TextView) rowView.findViewById(R.id.lobby_players_cell);
+
+			ImageView lobbyState = (ImageView) rowView.findViewById(R.id.lobby_state);
+			TextView lobbyName = (TextView) rowView.findViewById(R.id.lobby_row_name);
+			TextView redPlayer = (TextView) rowView.findViewById(R.id.lobby_player_red);
+			TextView bluePlayer = (TextView) rowView.findViewById(R.id.lobby_player_blue);
+			TextView greenPlayer = (TextView) rowView.findViewById(R.id.lobby_player_green);
+			TextView yellowPlayer = (TextView) rowView.findViewById(R.id.lobby_player_yellow);
 
 			Game game = objects.get(position);
-			String gameName = game.getRedPlayer().getUsername() + "'s Game";
+			String username = game.getRedPlayer().getUsername();
 			int playerCount = game.getPlayerCount();
-
-			lobbyName.setText(gameName);
-			lobbyPlayers.setText(playerCount + "/4");
+			State state = State.valueOf(game.getState());
 			
+			switch (state) {
+				case RUNNING: lobbyState.setImageResource(R.drawable.ic_lobby_full); break;
+				default: lobbyState.setImageResource(R.drawable.ic_lobby_open); break;
+			}
+
+			lobbyName.setText(username + "'s Game (" + playerCount + "/4)");
+			
+			if (game.getRedPlayer() != null)
+				redPlayer.setText(game.getRedPlayer().getUsername());
+			
+			if (game.getBluePlayer() != null)
+				bluePlayer.setText(game.getBluePlayer().getUsername());
+			
+			if (game.getGreenPlayer() != null)
+				greenPlayer.setText(game.getGreenPlayer().getUsername());
+			
+			if (game.getYellowPlayer() != null)
+				yellowPlayer.setText(game.getYellowPlayer().getUsername());
+
 			return rowView;
 		}
 		
@@ -142,7 +214,7 @@ public class LobbyBrowserActivity extends Activity {
 			@Override
 			protected Object doInBackground(Void... params) {
 				try {
-					appState.getEndpoint().logout(appState.getSession());
+					appState.getEndpoint().logout();
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

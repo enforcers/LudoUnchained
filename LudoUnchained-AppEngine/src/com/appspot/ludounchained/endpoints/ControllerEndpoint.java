@@ -13,6 +13,7 @@ import com.appspot.ludounchained.model.GameState;
 import com.appspot.ludounchained.model.Session;
 import com.appspot.ludounchained.model.User;
 import com.appspot.ludounchained.util.MD5;
+import com.appspot.ludounchained.Dice;
 import com.appspot.ludounchained.EMF;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -44,6 +45,30 @@ public class ControllerEndpoint {
 		} else {
 			return null;
 		}
+	}
+	
+	@ApiMethod(name = "registerDevice")
+	public com.appspot.ludounchained.cvo.Session registerDevice(
+			@Named("sessionId") String sessionId,
+			@Named("registrationId") String registrationId)
+	{
+		EntityManager mgr = getEntityManager();
+		Session session = null;
+		
+		try {
+			session = mgr.find(Session.class, sessionId);
+			session.setRegistrationId(registrationId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			session = null;
+		} finally {
+			mgr.close();
+		}
+		
+		if (session != null)
+			return session.getCVO();
+		else
+			return null;
 	}
 	
 	@ApiMethod(name = "logout")
@@ -142,39 +167,96 @@ public class ControllerEndpoint {
 		try {
 			game = new Game(session.getUser());
 			mgr.persist(game);
-			//gameState = game.getGameState();
 		} finally {
 			mgr.close();
 		}
 		
-		result = game.getCVO();
-		result.setGameState(game.getGameState().getCVO());
-
+		if (game != null) {
+			result = game.getCVO();
+			result.setGameState(game.getGameState().getCVO());
+		}
+		
 		return result;
 
 	}
 
 	@ApiMethod(name = "joinGame")
-	public com.appspot.ludounchained.cvo.GameState joinGame(
+	public com.appspot.ludounchained.cvo.Game joinGame(
 			@Named("sessionId") String sessionId,
-			Key gameId) {
+			@Named("gameId") long gameId) {
 		Session session = validateSession(sessionId);
+		Game game = null;
 		GameState gameState = null;
+		com.appspot.ludounchained.cvo.Game result = null;
 		
 		EntityManager mgr = getEntityManager();
+
 		try {
-			Game game = mgr.find(Game.class, gameId);
+			game = mgr.find(Game.class, gameId);
 			game.addSpectator(session.getUser());
 			gameState = game.getGameState();
 		} finally {
 			mgr.close();
 		}
-		
-		if (gameState != null) {
-			return gameState.getCVO();
-		} else {
-			return null;
+
+		if (game != null) {
+			result = game.getCVO();
+
+			if (gameState != null)
+				result.setGameState(gameState.getCVO());
 		}
+		
+		return result;
+	}
+	
+	@ApiMethod(name = "leaveGame")
+	public Game suspendGame(
+			@Named("sessionId") String sessionId,
+			Key gameId) {
+		Session session = validateSession(sessionId);
+		Game game = null;
+		
+		EntityManager mgr = getEntityManager();
+
+		try {
+			game = mgr.find(Game.class, gameId);
+			
+			if (game != null) {
+				game.setPlayer(game.getPlayerColor(session.getUser()), null);
+				game.removeSpectator(session.getUser());
+			}
+		} finally {
+			mgr.close();
+		}
+
+		if (game != null) {
+			return game;
+		}
+		
+		return null;
+	}
+	
+	@ApiMethod(name = "rollDice")
+	public Dice rollDice(
+			@Named("sessionId") String sessionId,
+			Key gameId) {
+		Session session = validateSession(sessionId);
+		Game game = null;
+		Dice dice = null;
+		
+		EntityManager mgr = getEntityManager();
+		
+		try {
+			game = mgr.find(Game.class, gameId);
+			
+			if (game != null && game.getPlayer(game.getTurn()).equals(session.getUser())) {
+				dice = new Dice(game);
+			}
+		} finally {
+			mgr.close();
+		}
+		
+		return dice;
 	}
 
 	private boolean containsUser(String username) {

@@ -4,13 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.appspot.ludounchained.model.Game.State;
 import com.appspot.ludounchained.util.PlayerColor;
 import com.google.appengine.api.datastore.Key;
 
 public class Game implements Serializable {
 	
 	private static final long serialVersionUID = -2843298703124170701L;
-
+	
 	private Key gameId;
 	private User redPlayer;
 	private User bluePlayer;
@@ -19,6 +20,8 @@ public class Game implements Serializable {
 
 	List<User> spectators;
 	private GameState gameState;
+	private State state;
+	private PlayerColor turn;
 
 	public Game() {
 		super();
@@ -27,6 +30,8 @@ public class Game implements Serializable {
 	public Game(com.appspot.ludounchained.model.Game game) {
 		if (game != null) {
 			gameId = game.getGameId();
+			state = game.getState();
+			turn = game.getTurn();
 
 			if (game.getRedPlayer() != null)
 				redPlayer = new User(game.getRedPlayer());
@@ -95,6 +100,14 @@ public class Game implements Serializable {
 	
 	public User getYellowPlayer() {
 		return yellowPlayer;
+	}
+	
+	public State getState() {
+		return state;
+	}
+	
+	public PlayerColor getTurn() {
+		return turn;
 	}
 	
 }

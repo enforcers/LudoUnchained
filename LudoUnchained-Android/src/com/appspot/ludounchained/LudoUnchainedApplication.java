@@ -20,7 +20,7 @@ public class LudoUnchainedApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		LudoUnchainedApplication.mContext = this;
-		setEndpoint(new EndpointServiceStub());
+		setEndpoint(new EndpointServiceStub(this));
 	}
 	
 	public static Context getContext() {

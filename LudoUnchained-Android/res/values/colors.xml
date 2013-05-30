@@ -2,6 +2,7 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="black">#000000</color>
+    <color name="dark_text">#040404</color>
     <color name="player_yellow">#FFFF00</color>
     <color name="player_red">#FF0000</color>
     <color name="player_blue">#0000FF</color>
