@@ -41,5 +41,18 @@ public class User implements Serializable {
 	public com.appspot.ludounchained.cvo.User getCVO() {
 		return new com.appspot.ludounchained.cvo.User(this);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this)
+			return true;
+		
+		if (obj == null || obj.getClass() != this.getClass())
+			return false;
+		
+		User user = (User) obj;
+		
+		return (username != null && username.equals(user.getUsername()));
+	}
 
 }

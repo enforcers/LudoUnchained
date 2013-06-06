@@ -49,9 +49,9 @@ public class LobbyBrowserActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				final Game game = (Game) parent.getItemAtPosition(position);
 				
-				new BackgroundTask().new Task(_this) {
+				new BackgroundTask.Task<Game>(_this) {
 					@Override
-					protected Object doInBackground(Void... params) {
+					protected Game doInBackground(Void... params) {
 						try {
 							return appState.getEndpoint().joinGame(game);
 						} catch (RemoteException e) {
@@ -63,12 +63,10 @@ public class LobbyBrowserActivity extends Activity {
 					}
 					
 					@Override
-					protected void onPostExecute(final Object result) {
+					protected void onPostExecute(final Game result) {
 						super.onPostExecute(result);
 						
 						if (result != null) {
-							Game game = (Game)result;
-							appState.setGame(game);
 							startActivity(new Intent(getApplicationContext(), GameActivity.class));
 						}
 					}
@@ -96,9 +94,9 @@ public class LobbyBrowserActivity extends Activity {
 	}
 	
 	public void newGame(MenuItem m) {
-		new BackgroundTask().new Task(this) {
+		new BackgroundTask.Task<Game>(this) {
 			@Override
-			protected Object doInBackground(Void... params) {
+			protected Game doInBackground(Void... params) {
 				try {
 					return appState.getEndpoint().newGame();
 				} catch (RemoteException e) {
@@ -110,12 +108,10 @@ public class LobbyBrowserActivity extends Activity {
 			}
 			
 			@Override
-			protected void onPostExecute(final Object result) {
+			protected void onPostExecute(final Game result) {
 				super.onPostExecute(result);
 				
 				if (result != null) {
-					Game game = (Game)result;
-					appState.setGame(game);
 					startActivity(new Intent(getApplicationContext(), GameActivity.class));
 				}
 			}
@@ -123,9 +119,9 @@ public class LobbyBrowserActivity extends Activity {
 	}
 
 	private void fillGameOverview() {
-		new BackgroundTask().new Task(this) {
+		new BackgroundTask.Task<List<Game>>(this) {
 			@Override
-			protected Object doInBackground(Void... params) {
+			protected List<Game> doInBackground(Void... params) {
 				try {
 					return appState.getEndpoint().listGames();
 				} catch (RemoteException e) {
@@ -136,16 +132,12 @@ public class LobbyBrowserActivity extends Activity {
 				return null;
 			}
 			
-			@SuppressWarnings("unchecked")
 			@Override
-			protected void onPostExecute(final Object result) {
+			protected void onPostExecute(final List<Game> result) {
 				super.onPostExecute(result);
 				
 				if (result != null) {
-					List<Game> games = (List<Game>)result;
-					Log.v("LIST LOBBY COUNT", games.size() + " ");
-					
-					GameListAdapter gameListAdapter = new GameListAdapter(getApplicationContext(), games);
+					GameListAdapter gameListAdapter = new GameListAdapter(getApplicationContext(), result);
 					mLobbyOverview.setAdapter(gameListAdapter);
 				}
 			}
@@ -210,9 +202,9 @@ public class LobbyBrowserActivity extends Activity {
 	}
 	
 	public void logout(MenuItem m) {
-		new BackgroundTask().new SilentTask() {
+		new BackgroundTask.SilentTask<Void>() {
 			@Override
-			protected Object doInBackground(Void... params) {
+			protected Void doInBackground(Void... params) {
 				try {
 					appState.getEndpoint().logout();
 				} catch (RemoteException e) {
@@ -224,7 +216,7 @@ public class LobbyBrowserActivity extends Activity {
 			}
 			
 			@Override
-			protected void onPostExecute(final Object result) {
+			protected void onPostExecute(final Void result) {
 				super.onPostExecute(result);
 
 				SharedPreferences settings = getSharedPreferences("auth", 0);

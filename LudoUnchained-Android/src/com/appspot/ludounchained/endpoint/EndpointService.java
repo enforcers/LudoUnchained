@@ -13,6 +13,8 @@ public interface EndpointService {
 	public Session register(String username, String password) throws RemoteException;
 	public Game newGame() throws RemoteException;
 	public Game joinGame(Game game) throws RemoteException;
+	public Game leaveGame(Game game) throws RemoteException;
+	public Game startGame(Game game) throws RemoteException;
 	public List<Game> listGames() throws RemoteException;
 
 }

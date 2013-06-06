@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.appspot.ludounchained.GameActivity;
 import com.appspot.ludounchained.LudoUnchainedApplication;
 import com.appspot.ludounchained.controllerEndpoint.ControllerEndpoint;
 import com.appspot.ludounchained.controllerEndpoint.model.Session;
@@ -50,7 +51,14 @@ public class GCMIntentService extends GCMBaseIntentService {
 	 */
 	@Override
 	protected void onMessage(Context context, Intent intent) {
-		Log.i(EndpointServiceStub.class.getName(), "Message received:" + intent.getStringExtra("message"));
+		Log.i("onMessage called", "NOW");
+		Intent notificationIntent = new Intent(context, GameActivity.class);
+		notificationIntent.putExtra("message", intent.getStringExtra("message"));
+		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		//startActivity(notificationIntent);
+		this.sendBroadcast(intent);
+		//startActivity(notificationIntent);
+		//Log.i(EndpointServiceStub.class.getName(), "Message received:" + intent.getStringExtra("message"));
 		// TODO Auto-generated method stub
 		
 	}

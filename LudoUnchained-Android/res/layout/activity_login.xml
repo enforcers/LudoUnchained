@@ -6,8 +6,7 @@
 
 	<RelativeLayout
 	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:background="@drawable/gradient_radial_light" >
+	    android:layout_height="wrap_content" >
 
 	    <!-- Login Form Stars -->
 		<LinearLayout
@@ -18,35 +17,65 @@
 		    android:paddingLeft="@dimen/activity_horizontal_margin"
 		    android:paddingRight="@dimen/activity_horizontal_margin"
 		    android:paddingTop="@dimen/activity_vertical_margin" >
-
-		    <TextView
-		        android:layout_width="wrap_content"
+		    
+		    <LinearLayout
+		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
-		        android:text="@string/username"
-		        android:textAppearance="?android:attr/textAppearanceMedium"
-		        android:textStyle="bold" />
-		
-		    <EditText
-		        android:id="@+id/login_username"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:ems="10"
-		        android:inputType="text" />
-		
-		    <TextView
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="15dp"
-		        android:text="@string/password"
-		        android:textAppearance="?android:attr/textAppearanceMedium"
-		        android:textStyle="bold" />
-		
-		    <EditText
-		        android:id="@+id/login_password"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:ems="10"
-		        android:inputType="textPassword" />
+		        android:orientation="vertical"
+		        style="@style/TextInputContainer">
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal"
+			        style="@style/TextInput" >
+	
+				    <TextView
+				        android:layout_width="fill_parent"
+				        android:layout_height="wrap_content"
+				        android:layout_weight="1.6"
+				        android:text="@string/username"
+				        android:textAppearance="?android:attr/textAppearanceMedium" />
+				
+				    <EditText
+				        style="@style/edittext_blank"
+				        android:id="@+id/login_username"
+				        android:layout_width="fill_parent"
+				        android:layout_height="30dp"
+				        android:layout_weight="1"
+				        android:ems="10"
+				        android:inputType="text" />
+			    
+			    </LinearLayout>
+			    
+			    <View
+			        android:layout_width="fill_parent"
+			        android:layout_height="1dp"
+			        android:background="@color/border_grey" />
+	
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal"
+			        style="@style/TextInput" >
+	
+				    <TextView
+				        android:layout_width="fill_parent"
+				        android:layout_height="wrap_content"
+				        android:layout_weight="1.6"
+				        android:text="@string/password"
+				        android:textAppearance="?android:attr/textAppearanceMedium" />
+				
+				    <EditText
+				        style="@style/edittext_blank"
+				        android:id="@+id/login_password"
+				        android:layout_width="fill_parent"
+				        android:layout_height="30dp"
+				        android:layout_weight="1"
+				        android:ems="10"
+				        android:inputType="textPassword" />
+				    
+			    </LinearLayout>
+		    </LinearLayout>
 		
 		    <CheckBox
 		        android:id="@+id/login_remember_me"
@@ -74,13 +103,21 @@
 			    android:onClick="doLogin" />
 
 			<TextView
-			    android:id="@+id/link_to_register"
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content"
 			    android:layout_marginTop="25dp"
 			    android:gravity="center"
+			    android:text="@string/register_hint"
+			    android:textAppearance="?android:attr/textAppearance" />
+
+			<TextView
+			    android:id="@+id/link_to_register"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:gravity="center"
 			    android:text="@string/link_to_register"
-			    android:textSize="20sp"
+			    android:textColor="@color/blood_red"
+			    android:textAppearance="?android:attr/textAppearance"
 			    android:clickable="true"
 			    android:onClick="doRegister" />
 

@@ -47,9 +47,9 @@ public class LoginActivity extends Activity {
 		
 		mLoginFailureText.setVisibility(TextView.GONE);
 
-		new BackgroundTask().new Task(this) {
+		new BackgroundTask.Task<Session>(this) {
 			@Override
-			protected Object doInBackground(Void... params) {
+			protected Session doInBackground(Void... params) {
 
 				try {
 					return appState.getEndpoint().login(username, password);
@@ -59,13 +59,10 @@ public class LoginActivity extends Activity {
 			}
 			
 			@Override
-			protected void onPostExecute(final Object result) {
+			protected void onPostExecute(final Session result) {
 				super.onPostExecute(result);
 				
 				if (result != null) {
-					Session session = (Session)result;
-					appState.setSession(session);
-					
 					if (mRememberMe.isChecked()) {
 						SharedPreferences settings = getSharedPreferences("auth", 0);
 						SharedPreferences.Editor editor = settings.edit();

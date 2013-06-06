@@ -4,26 +4,26 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
-public class BackgroundTask {
-	public class SilentTask extends AsyncTask<Void, Void, Object> {
+public abstract class BackgroundTask {
+	public static class SilentTask<T> extends AsyncTask<Void, Void, T> {
 
 		@Override
-		protected Object doInBackground(Void... params) {
+		protected T doInBackground(Void... params) {
 			return null;
 		}
 		
 		@Override
-		protected void onCancelled(final Object result) {
+		protected void onCancelled(final T result) {
 			super.onCancelled(result);
 		}
 		
 		@Override
-		protected void onPostExecute(final Object result) {
+		protected void onPostExecute(final T result) {
 			super.onPostExecute(result);
 		}
 	}
 
-	public class Task extends AsyncTask<Void, Void, Object> {
+	public static class Task<T> extends AsyncTask<Void, Void, T> {
 		private ProgressDialog dialog;
 		
 		public Task(Context context) {
@@ -40,18 +40,18 @@ public class BackgroundTask {
 		}
 
 		@Override
-		protected Object doInBackground(Void... params) {
+		protected T doInBackground(Void... params) {
 			return null;
 		}
 		
 		@Override
-		protected void onCancelled(final Object result) {
+		protected void onCancelled(final T result) {
 			super.onCancelled(result);
 			dialog.dismiss();
 		}
 		
 		@Override
-		protected void onPostExecute(final Object result) {
+		protected void onPostExecute(final T result) {
 			super.onPostExecute(result);
 
 			dialog.dismiss();

@@ -29,7 +29,6 @@ public class GameState implements Serializable {
 
 	public GameState() {
 		super();
-		init();
 	}
 	
 	public Key getGameStateId() {
@@ -48,12 +47,24 @@ public class GameState implements Serializable {
 		fields.add(field);
 	}
 	
-	private void init() {
-		fields = new ArrayList<Field>();
-		addField(new Field(PlayerColor.RED, 0));
-		addField(new Field(PlayerColor.RED, 0));
-		addField(new Field(PlayerColor.RED, 0));
-		addField(new Field(PlayerColor.RED, 0));
+	public void addPlayerFields(PlayerColor color) {
+		if (fields == null)
+			fields = new ArrayList<Field>();
+
+		fields.add(new Field(color, 0));
+		fields.add(new Field(color, 0));
+		fields.add(new Field(color, 0));
+		fields.add(new Field(color, 0));
+	}
+	
+	public void removePlayerFields(PlayerColor color) {
+		if (fields == null)
+			return;
+		
+		for (Field field : fields) {
+			if (field.getColor() == color)
+				fields.remove(field);
+		}
 	}
 	
 	public com.appspot.ludounchained.cvo.GameState getCVO() {

@@ -3,5 +3,6 @@
 
     <string name="title_activity_game">Game</string>
     <string name="game_start">Start</string>
+    <string name="game_request_join">Request Join</string>
 
 </resources>

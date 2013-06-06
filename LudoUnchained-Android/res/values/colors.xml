@@ -8,5 +8,9 @@
     <color name="player_blue">#0000FF</color>
     <color name="player_green">#00FF00</color>
     <color name="blood_red">#cc0000</color>
+    
+    <color name="border_grey">#efefef</color>
+    <color name="red_background_light">#ffeded</color>
+    <color name="red_background_light_accent">#fbd8d7</color>
 
 </resources>

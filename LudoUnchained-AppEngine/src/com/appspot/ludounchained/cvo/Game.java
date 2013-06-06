@@ -73,6 +73,16 @@ public class Game implements Serializable {
 				(greenPlayer == null ? 0 : 1) +
 				(yellowPlayer == null ? 0 : 1);
 	}
+	
+	public List<User> getPlayers() {
+		List<User> result = new ArrayList<User>();
+		result.add(getRedPlayer());
+		result.add(getBluePlayer());
+		result.add(getGreenPlayer());
+		result.add(getYellowPlayer());
+		
+		return result;
+	}
 
 	public List<User> getSpectators() {
 		return spectators;

@@ -6,7 +6,8 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="link_to_register">New? Register here</string>
+    <string name="register_hint">No member at Ludo Unchained?</string>
+    <string name="link_to_register">Create a free account</string>
     <string name="login_failure">Wrong credentials. Try again or register</string>
 
 </resources>

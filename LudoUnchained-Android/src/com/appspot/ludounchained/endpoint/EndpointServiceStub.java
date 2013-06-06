@@ -30,6 +30,7 @@ public class EndpointServiceStub implements EndpointService {
 
     	try {
     		result = endpoint.login(username, password).execute();
+    		appState.setSession(result);
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
@@ -37,7 +38,6 @@ public class EndpointServiceStub implements EndpointService {
     	if (result == null)
     		throw new InvalidLoginException("Login credentials are invalid");
 
-    	appState.setSession(result);
     	GCMIntentService.register(appState);
 
     	return result;
@@ -48,6 +48,7 @@ public class EndpointServiceStub implements EndpointService {
     	
     	try {
     		endpoint.logout(appState.getSession().getSessionId()).execute();
+    		appState.setSession(null);
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
@@ -60,10 +61,17 @@ public class EndpointServiceStub implements EndpointService {
     	
     	try {
     		result = endpoint.register(username, password).execute();
+    		appState.setSession(result);
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
     	
+    	if (result == null)
+    		return null;
+    		//throw new ..;
+
+    	GCMIntentService.register(appState);
+
     	return result;
 	}
 
@@ -73,6 +81,7 @@ public class EndpointServiceStub implements EndpointService {
     	
     	try {
     		result = endpoint.newGame(appState.getSession().getSessionId()).execute();
+    		appState.setGame(result);
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
@@ -86,6 +95,35 @@ public class EndpointServiceStub implements EndpointService {
     	
     	try {
     		result = endpoint.joinGame(appState.getSession().getSessionId(), game.getGameId().getId()).execute();
+    		appState.setGame(result);
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+
+		return result;
+	}
+	
+	public Game leaveGame(Game game) {
+		Game result = null;
+		ControllerEndpoint endpoint = getEndpoint();
+    	
+    	try {
+    		result = endpoint.leaveGame(appState.getSession().getSessionId(), game.getGameId().getId()).execute();
+    		appState.setGame(null);
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+
+		return result;
+	}
+	
+	public Game startGame(Game game) {
+		Game result = null;
+		ControllerEndpoint endpoint = getEndpoint();
+
+    	try {
+    		result = endpoint.startGame(appState.getSession().getSessionId(), game.getGameId().getId()).execute();
+    		appState.setGame(result);
     	} catch (IOException e) {
     		e.printStackTrace();
     	}

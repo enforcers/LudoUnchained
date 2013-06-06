@@ -31,9 +31,9 @@ public class MainActivity extends Activity {
 			final String username = settings.getString("username", null);
 			final String password = settings.getString("password", null);
 			
-			new BackgroundTask().new SilentTask() {
+			new BackgroundTask.SilentTask<Session>() {
 				@Override
-				protected Object doInBackground(Void... params) {
+				protected Session doInBackground(Void... params) {
 					try {
 						return appState.getEndpoint().login(username, password);
 					} catch (RemoteException e) {
@@ -45,19 +45,17 @@ public class MainActivity extends Activity {
 				}
 				
 				@Override
-				protected void onPostExecute(final Object result) {
+				protected void onPostExecute(final Session result) {
 					super.onPostExecute(result);
 					
 					if (result != null) {
-						Session session = (Session)result;
-						appState.setSession(session);
-						
 						startActivity(new Intent(getApplicationContext(), LobbyBrowserActivity.class));
-						finish();
 					} else {
-						Log.v("Authentification", "Automated login failed");
+						Log.d(MainActivity.class.getName(), "Automated login failed");
 						startActivity(new Intent(getApplicationContext(), LoginActivity.class));
 					}
+					
+					finish();
 				}
 			}.execute();
 			

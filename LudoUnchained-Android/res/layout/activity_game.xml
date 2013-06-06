@@ -55,16 +55,48 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true" />
         </RelativeLayout>
-    </LinearLayout>
 
-	<Button
-	    android:id="@+id/game_start"
-	    style="@style/ButtonText"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentBottom="true"
-	    android:background="@drawable/button_red"
-	    android:text="@string/game_start"
-	    android:onClick="doGameStart" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent">
+            
+            <ScrollView
+                android:id="@+id/game_event_scrollview"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_above="@+id/game_start"
+			    android:layout_alignParentLeft="true"
+			    android:layout_alignParentTop="true"
+			    android:scrollbars="vertical">
+				<TextView
+				    android:id="@+id/game_event_view"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content" />
+            </ScrollView>
+
+			<Button
+			    android:id="@+id/game_start"
+			    style="@style/ButtonText"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_alignParentBottom="true"
+			    android:background="@drawable/button_red"
+			    android:onClick="doGameStart"
+			    android:text="@string/game_start"
+			    android:visibility="invisible" />
+			
+			<Button
+			    android:id="@+id/game_request_join"
+			    style="@style/ButtonText"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_alignParentBottom="true"
+			    android:background="@drawable/button_red"
+			    android:onClick="doRequestJoin"
+			    android:text="@string/game_request_join"
+			    android:visibility="invisible" />
+            
+        </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>

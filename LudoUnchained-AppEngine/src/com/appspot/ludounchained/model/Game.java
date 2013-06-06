@@ -4,16 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.appspot.ludounchained.util.PlayerColor;
@@ -31,14 +28,11 @@ public class Game implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key gameId;
 
-	@Basic(fetch = FetchType.EAGER) @Unowned private User redPlayer;
-	@Basic(fetch = FetchType.EAGER) @Unowned private User bluePlayer;
-	@Basic(fetch = FetchType.EAGER) @Unowned private User greenPlayer;
-	@Basic(fetch = FetchType.EAGER) @Unowned private User yellowPlayer;
-
-	@Unowned
-	@OneToMany(fetch = FetchType.EAGER)
-	List<User> spectators;
+	@Unowned private User redPlayer;
+	@Unowned private User bluePlayer;
+	@Unowned private User greenPlayer;
+	@Unowned private User yellowPlayer;
+	@Unowned List<User> spectators;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	private GameState gameState;
@@ -54,10 +48,10 @@ public class Game implements Serializable {
 	}
 	
 	public Game(User user) {
-		setPlayer(PlayerColor.RED, user);
 		turn = PlayerColor.RED;
 		state = State.LOBBY;
 		gameState = new GameState();
+		setPlayer(PlayerColor.RED, user);
 	} 
 	
 	public Key getGameId() {
@@ -75,28 +69,37 @@ public class Game implements Serializable {
 	}
 	
 	public PlayerColor getPlayerColor(User user) {
-		if (getRedPlayer().equals(user))
+		if (user.equals(getRedPlayer()))
 			return PlayerColor.RED;
 		
-		if (getBluePlayer().equals(user))
+		if (user.equals(getBluePlayer()))
 			return PlayerColor.BLUE;
 		
-		if (getGreenPlayer().equals(user))
+		if (user.equals(getGreenPlayer()))
 			return PlayerColor.GREEN;
 		
-		if (getYellowPlayer().equals(user))
+		if (user.equals(getYellowPlayer()))
 			return PlayerColor.YELLOW;
 		
 		return null;
 	}
 	
 	public void setPlayer(PlayerColor color, User user) {
+		if (color == null)
+			return;
+
 		switch (color) {
 			case RED    : setRedPlayer(user); break;
 			case BLUE   : setBluePlayer(user); break;
 			case GREEN  : setGreenPlayer(user); break;
 			case YELLOW : setYellowPlayer(user); break;
+			default     : return;
 		}
+		
+		if (user == null)
+			gameState.removePlayerFields(color);
+		else
+			gameState.addPlayerFields(color);
 	}
 	
 	public User getPlayer(PlayerColor color) {
@@ -142,7 +145,11 @@ public class Game implements Serializable {
 	}
 	
 	public void removeSpectator(User user) {
-		spectators.remove(user);
+		spectators = new ArrayList<User>();
+		/*for (User spectator : spectators) {
+			if (spectator.getUsername().equals(user.getUsername()))
+				spectators.remove(spectator);
+		}*/
 	}
 	
 	public User getRedPlayer() {

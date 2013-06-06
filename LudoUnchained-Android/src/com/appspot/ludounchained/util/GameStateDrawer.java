@@ -5,33 +5,40 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.appspot.ludounchained.LudoUnchainedApplication;
 import com.appspot.ludounchained.R;
 import com.appspot.ludounchained.controllerEndpoint.model.Field;
+import com.appspot.ludounchained.controllerEndpoint.model.Game;
 import com.appspot.ludounchained.controllerEndpoint.model.GameState;
+import com.appspot.ludounchained.controllerEndpoint.model.User;
 
 public class GameStateDrawer extends BaseAdapter {
 	public enum PlayerColor { RED, BLUE, GREEN, YELLOW }
 	
 	private GameState gameState;
+	private Game game;
 	private Context context;
+	private LudoUnchainedApplication appState;
 
 	private List<Integer> gameFieldMap;
 	private HashMap<PlayerColor, List<Integer>> playerFieldMap;
 	private Field[] fields = new Field[121];
 	private Field[][] fieldMap;
 	
-	public GameStateDrawer(Context context, GameState gameState) {//GameState gameState) {
+	public GameStateDrawer(Context context, Game game) {//GameState gameState) {
 		super();
 		
 		this.context = context;
-		this.gameState = gameState;
+		this.appState = (LudoUnchainedApplication) context.getApplicationContext();
 		this.gameFieldMap = Arrays.asList(44,45,46,47,48,37,26,15,4,5,6,17,28,39,50,51,52,53,54,65,76,75,74,73,72,83,94,105,116,115,114,103,92,81,70,69,68,67,66,55);
 
 		this.playerFieldMap = new HashMap<PlayerColor, List<Integer>>();
@@ -40,6 +47,19 @@ public class GameStateDrawer extends BaseAdapter {
 		this.playerFieldMap.put(PlayerColor.GREEN, Arrays.asList(108,109,119,120,64,63,62,61));
 		this.playerFieldMap.put(PlayerColor.YELLOW, Arrays.asList(99,100,110,111,104,93,82,71));
 		
+		update(game);
+		
+	}
+	
+	public void update(Game game) {
+		this.game = game;
+		this.gameState = game.getGameState();
+		convertFields();
+		drawUI();
+		this.notifyDataSetChanged();
+	}
+	
+	private void convertFields() {
 		for (Field field : gameState.getFields()) {
 			int position = field.getPosition();
 			PlayerColor color = PlayerColor.valueOf(field.getColor());
@@ -58,6 +78,30 @@ public class GameStateDrawer extends BaseAdapter {
 			}
 			
 			fields[position] = field; 
+		}
+	}
+	
+	private void drawUI() {
+		Activity activity = (Activity) context;
+		State state = State.valueOf(game.getState());
+		User currentUser = appState.getSession().getUser();
+		
+		Button startGame = (Button) activity.findViewById(R.id.game_start);
+		Button requestJoin = (Button) activity.findViewById(R.id.game_request_join);
+		
+		switch (state) {
+			case LOBBY:
+				if (game.getRedPlayer().equals(currentUser)) // check if lobby leader
+					startGame.setVisibility(View.VISIBLE);
+				
+				if (! game.getPlayers().contains(currentUser))
+					requestJoin.setVisibility(View.VISIBLE);
+
+				break;
+			case RUNNING:
+				break;
+			case FINISHED:
+				break;
 		}
 	}
 	
@@ -85,7 +129,7 @@ public class GameStateDrawer extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ImageView imageView;
 		if (convertView == null) {  // if it's not recycled
-		    imageView = new ImageView(context);
+		    imageView = new ImageView(appState);
 		    imageView.setLayoutParams(new GridView.LayoutParams(GridView.LayoutParams.WRAP_CONTENT, GridView.LayoutParams.WRAP_CONTENT));
 		    imageView.setScaleType(ImageView.ScaleType.CENTER);
 		} else {
@@ -164,10 +208,6 @@ public class GameStateDrawer extends BaseAdapter {
 	
 	public Field getField(int position) {
 		return fields[position];
-	}
-	
-	public void setGameState(GameState gameState) {
-		this.gameState = gameState;
 	}
 	
 }

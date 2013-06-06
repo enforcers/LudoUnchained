@@ -12,6 +12,7 @@ import com.appspot.ludounchained.model.Game;
 import com.appspot.ludounchained.model.GameState;
 import com.appspot.ludounchained.model.Session;
 import com.appspot.ludounchained.model.User;
+import com.appspot.ludounchained.util.GCMSender;
 import com.appspot.ludounchained.util.MD5;
 import com.appspot.ludounchained.Dice;
 import com.appspot.ludounchained.EMF;
@@ -165,7 +166,10 @@ public class ControllerEndpoint {
 		EntityManager mgr = getEntityManager();
 
 		try {
-			game = new Game(session.getUser());
+			User user = session.getUser();
+			mgr.merge(user);
+
+			game = new Game(user);
 			mgr.persist(game);
 		} finally {
 			mgr.close();
@@ -193,8 +197,12 @@ public class ControllerEndpoint {
 
 		try {
 			game = mgr.find(Game.class, gameId);
+			game.getPlayers(); // lazy fetch
 			game.addSpectator(session.getUser());
 			gameState = game.getGameState();
+			gameState.getFields(); // lazy fetch
+			
+			//GCMSender.doSend(getSession(game.getRedPlayer()), session.getUser().getUsername() + " JOINED");
 		} finally {
 			mgr.close();
 		}
@@ -209,28 +217,65 @@ public class ControllerEndpoint {
 		return result;
 	}
 	
-	@ApiMethod(name = "leaveGame")
-	public Game suspendGame(
+	@ApiMethod(name = "startGame")
+	public com.appspot.ludounchained.cvo.Game startGame(
 			@Named("sessionId") String sessionId,
-			Key gameId) {
+			@Named("gameId") long gameId) {
 		Session session = validateSession(sessionId);
+		
 		Game game = null;
+		GameState gameState = null;
+		com.appspot.ludounchained.cvo.Game result = null;
 		
 		EntityManager mgr = getEntityManager();
 
 		try {
 			game = mgr.find(Game.class, gameId);
+			game.getPlayers(); // lazy fetch
+			gameState = game.getGameState();
+			gameState.getFields(); // lazy fetch
 			
+			if (game != null) {
+				result = game.getCVO();
+
+				if (gameState != null)
+					result.setGameState(gameState.getCVO());
+			}
+
+			GCMSender.doSend(session, "Game started");
+		} finally {
+			mgr.close();
+		}
+		
+		return result;
+	}
+	
+	@ApiMethod(name = "leaveGame")
+	public com.appspot.ludounchained.cvo.Game leaveGame(
+			@Named("sessionId") String sessionId,
+			@Named("gameId") long gameId) {
+		Session session = validateSession(sessionId);
+		Game game = null;
+		
+		EntityManager mgr = getEntityManager();
+		
+		try {
+			game = mgr.find(Game.class, gameId);
+
 			if (game != null) {
 				game.setPlayer(game.getPlayerColor(session.getUser()), null);
 				game.removeSpectator(session.getUser());
+
+				if (game.getPlayerCount() == 0) {
+					mgr.remove(game);
+				}
 			}
 		} finally {
 			mgr.close();
 		}
 
 		if (game != null) {
-			return game;
+			return game.getCVO();
 		}
 		
 		return null;
