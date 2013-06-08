@@ -4,18 +4,18 @@ import java.io.Serializable;
 
 import com.appspot.ludounchained.util.PlayerColor;
 
-public class Field implements Serializable {
+public class Meeple implements Serializable {
 
 	private static final long serialVersionUID = 1402004711981987164L;
 
 	private PlayerColor color;
 	private int position;
 	
-	public Field() {
+	public Meeple() {
 		super();
 	}
 	
-	public Field(com.appspot.ludounchained.model.Field field) {
+	public Meeple(com.appspot.ludounchained.model.Meeple field) {
 		if (field != null) {
 			color = field.getColor();
 			position = field.getPosition();

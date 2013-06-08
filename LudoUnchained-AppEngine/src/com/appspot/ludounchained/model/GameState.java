@@ -25,7 +25,12 @@ public class GameState implements Serializable {
 	Key gameStateId;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	List<Field> fields;
+	List<Meeple> meeples;
+
+	private List<Meeple> meeple;
+	
+	// Spieler der am zug ist
+	public PlayerColor player;
 
 	public GameState() {
 		super();
@@ -35,39 +40,40 @@ public class GameState implements Serializable {
 		return gameStateId;
 	}
 	
-	public List<Field> getFields() {
-		return fields;
+	public List<Meeple> getMeeples() {
+		return meeples;
 	}
 	
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	public void setMeeples(List<Meeple> meeple) {
+		this.meeple = meeple;
 	}
 	
-	public void addField(Field field) {
-		fields.add(field);
+	public void addMeeple(Meeple meeple) {
+		meeples.add(meeple);
 	}
 	
-	public void addPlayerFields(PlayerColor color) {
-		if (fields == null)
-			fields = new ArrayList<Field>();
+	public void addPlayerMeeples(PlayerColor color) {
+		if (meeples == null)
+			meeples = new ArrayList<Meeple>();
 
-		fields.add(new Field(color, 0));
-		fields.add(new Field(color, 0));
-		fields.add(new Field(color, 0));
-		fields.add(new Field(color, 0));
+		meeples.add(new Meeple(color, 0));
+		meeples.add(new Meeple(color, 0));
+		meeples.add(new Meeple(color, 0));
+		meeples.add(new Meeple(color, 0));
 	}
 	
-	public void removePlayerFields(PlayerColor color) {
-		if (fields == null)
+	public void removePlayerMeeples(PlayerColor color) {
+		if (meeples == null)
 			return;
 		
-		for (Field field : fields) {
-			if (field.getColor() == color)
-				fields.remove(field);
+		for (Meeple meeple : meeples) {
+			if (meeple.getColor() == color)
+				meeples.remove(meeple);
 		}
 	}
 	
 	public com.appspot.ludounchained.cvo.GameState getCVO() {
 		return new com.appspot.ludounchained.cvo.GameState(this);
 	}
+
 }

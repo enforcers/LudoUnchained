@@ -105,9 +105,9 @@ public class Game implements Serializable {
 		}
 		
 		if (user == null)
-			gameState.removePlayerFields(color);
+			gameState.removePlayerMeeples(color);
 		else
-			gameState.addPlayerFields(color);
+			gameState.addPlayerMeeples(color);
 	}
 	
 	public User getPlayer(PlayerColor color) {

@@ -16,7 +16,7 @@ import com.appspot.ludounchained.model.User;
 import com.appspot.ludounchained.util.GCMSender;
 import com.appspot.ludounchained.util.MD5;
 import com.appspot.ludounchained.util.PlayerColor;
-import com.appspot.ludounchained.Dice;
+import com.appspot.ludounchained.Turn;
 import com.appspot.ludounchained.EMF;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -202,7 +202,7 @@ public class ControllerEndpoint {
 			game.getPlayers(); // lazy fetch
 			game.addSpectator(session.getUser());
 			gameState = game.getGameState();
-			gameState.getFields(); // lazy fetch
+			gameState.getMeeples(); // lazy fetch
 			
 			//GCMSender.doSend(getSession(game.getRedPlayer()), session.getUser().getUsername() + " JOINED");
 		} finally {
@@ -235,7 +235,7 @@ public class ControllerEndpoint {
 			game.getPlayers(); // lazy fetch
 			game.getSpectators(); // lazy fetch
 			gameState = game.getGameState();
-			gameState.getFields(); // lazy fetch
+			gameState.getMeeples(); // lazy fetch
 		} finally {
 			mgr.close();
 		}
@@ -264,12 +264,12 @@ public class ControllerEndpoint {
 			game.getPlayers(); // lazy fetch
 			game.getSpectators(); // lazy fetch
 			GameState gameState = game.getGameState();
-			gameState.getFields(); // lazy fetch
+			gameState.getMeeples(); // lazy fetch
 			
 			game.setState(State.RUNNING);
 
 			if (game.isSinglePlayer())
-				gameState.addPlayerFields(PlayerColor.BLUE);
+				gameState.addPlayerMeeples(PlayerColor.BLUE);
 
 			GCMSender.informUsers(getUserSessions(game), GCMSender.GAME_STARTED);
 		} catch (Exception e) {
@@ -313,12 +313,12 @@ public class ControllerEndpoint {
 	}
 	
 	@ApiMethod(name = "rollDice")
-	public Dice rollDice(
+	public Turn rollDice(
 			@Named("sessionId") String sessionId,
 			Key gameId) {
 		Session session = validateSession(sessionId);
 		Game game = null;
-		Dice dice = null;
+		Turn turn = null;
 		
 		EntityManager mgr = getEntityManager();
 		
@@ -326,13 +326,13 @@ public class ControllerEndpoint {
 			game = mgr.find(Game.class, gameId);
 			
 			if (game != null && game.getPlayer(game.getTurn()).equals(session.getUser())) {
-				dice = new Dice(game);
+				turn = new Turn(game);
 			}
 		} finally {
 			mgr.close();
 		}
 		
-		return dice;
+		return turn;
 	}
 	
 	private List<Session> getUserSessions(Game game) {

@@ -14,7 +14,7 @@ import com.appspot.ludounchained.util.PlayerColor;
 import com.google.appengine.api.datastore.Key;
 
 @Entity
-public class Field implements Serializable {
+public class Meeple implements Serializable {
 
 	private static final long serialVersionUID = 5467860780430273931L;
 
@@ -29,11 +29,11 @@ public class Field implements Serializable {
 	@Basic
 	private int position;
 	
-	public Field() {
+	public Meeple() {
 		super();
 	}
 	
-	public Field(PlayerColor color, int position) {
+	public Meeple(PlayerColor color, int position) {
 		this.color = color;
 		this.position = position;
 	}
@@ -54,8 +54,8 @@ public class Field implements Serializable {
 		this.position = position;
 	}
 	
-	public com.appspot.ludounchained.cvo.Field getCVO() {
-		return new com.appspot.ludounchained.cvo.Field(this);
+	public com.appspot.ludounchained.cvo.Meeple getCVO() {
+		return new com.appspot.ludounchained.cvo.Meeple(this);
 	}
 	
 }

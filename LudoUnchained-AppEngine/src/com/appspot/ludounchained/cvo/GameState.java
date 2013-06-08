@@ -11,7 +11,7 @@ public class GameState implements Serializable {
 	private static final long serialVersionUID = -6007318243480887126L;
 
 	private Key gameStateId;
-	List<Field> fields;
+	List<Meeple> meeples;
 	
 
 	public GameState() {
@@ -22,9 +22,9 @@ public class GameState implements Serializable {
 		if (gameState != null) {
 			gameStateId = gameState.getGameStateId();
 			
-			fields = new ArrayList<Field>();
-			for (com.appspot.ludounchained.model.Field obj : gameState.getFields()) {
-				fields.add(obj.getCVO());
+			meeples = new ArrayList<Meeple>();
+			for (com.appspot.ludounchained.model.Meeple obj : gameState.getMeeples()) {
+				meeples.add(obj.getCVO());
 			}
 		}
 	}
@@ -33,7 +33,7 @@ public class GameState implements Serializable {
 		return gameStateId;
 	}
 	
-	public List<Field> getFields() {
-		return fields;
+	public List<Meeple> getMeeples() {
+		return meeples;
 	}
 }
