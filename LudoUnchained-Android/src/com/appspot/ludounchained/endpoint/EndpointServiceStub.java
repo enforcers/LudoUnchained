@@ -144,6 +144,20 @@ public class EndpointServiceStub implements EndpointService {
 		return result.getItems();
 	}
 	
+	public Game getGame(Game game) throws RemoteException {
+		Game result = null;
+		ControllerEndpoint endpoint = getEndpoint();
+
+    	try {
+    		result = endpoint.getGame(appState.getSession().getSessionId(), game.getGameId().getId()).execute();
+    		appState.setGame(result);
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+
+		return result;
+	}
+	
 	private ControllerEndpoint getEndpoint() {
 		ControllerEndpoint.Builder endpointBuilder = new ControllerEndpoint.Builder(
     			AndroidHttp.newCompatibleTransport(),

@@ -56,16 +56,6 @@ public class GameActivity extends Activity {
 	}
 	
 	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
-		
-		String message = intent.getStringExtra("message");
-		TextView eventView = (TextView) findViewById(R.id.game_event_view);
-		eventView.append(message + "\n");
-		Log.i("message received: ", message);
-	}
-	
-	@Override
 	protected void onResume() {
 		super.onResume();
 		
@@ -79,7 +69,8 @@ public class GameActivity extends Activity {
 				TextView eventView = (TextView) findViewById(R.id.game_event_view);
 				eventView.append(intent.getStringExtra("message") + "\n");
 				scrollView.smoothScrollTo(0, eventView.getBottom());
-				Log.i("MESSAGE RECEIVED BROADCAST", intent.getStringExtra("message"));
+				
+				refreshGameState();
 			}
 			
 		};
@@ -99,7 +90,10 @@ public class GameActivity extends Activity {
 	public void onBackPressed() {
 		Game game = appState.getGame();
 		State state = State.valueOf(game.getState());
-		if (state == State.RUNNING && game.getPlayers().contains(appState.getUser())) {
+		
+		boolean isPlayer = game.getPlayers().contains(appState.getUser());
+
+		if (state == State.RUNNING && isPlayer) {
 			new AlertDialog.Builder(this)
 				.setMessage("Are you sure you want to leave a running game? (You will get points substracted)")
 				.setCancelable(false)
@@ -197,6 +191,29 @@ public class GameActivity extends Activity {
 			protected void onPostExecute(final Game result) {
 				super.onPostExecute(result);
 				finish();
+			}
+		}.execute();
+	}
+	
+	public void refreshGameState() {
+		new BackgroundTask.SilentTask<Game>() {
+			@Override
+			protected Game doInBackground(Void... params) {
+				try {
+					return appState.getEndpoint().getGame(appState.getGame());
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				return null;
+			}
+			
+			@Override
+			protected void onPostExecute(final Game result) {
+				super.onPostExecute(result);
+
+				drawGameState();
 			}
 		}.execute();
 	}

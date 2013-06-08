@@ -67,19 +67,23 @@ public class Game implements Serializable {
 	}
 	
 	public int getPlayerCount() {
-		return
-				(redPlayer == null ? 0 : 1) +
-				(bluePlayer == null ? 0 : 1) +
-				(greenPlayer == null ? 0 : 1) +
-				(yellowPlayer == null ? 0 : 1);
+		return getPlayers().size();
 	}
 	
 	public List<User> getPlayers() {
 		List<User> result = new ArrayList<User>();
-		result.add(getRedPlayer());
-		result.add(getBluePlayer());
-		result.add(getGreenPlayer());
-		result.add(getYellowPlayer());
+
+		if (getRedPlayer() != null)
+			result.add(getRedPlayer());
+		
+		if (getBluePlayer() != null)
+			result.add(getBluePlayer());
+		
+		if (getGreenPlayer() != null)
+			result.add(getGreenPlayer());
+		
+		if (getYellowPlayer() != null)
+			result.add(getYellowPlayer());
 		
 		return result;
 	}

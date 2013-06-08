@@ -1,6 +1,5 @@
 package com.appspot.ludounchained;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.appspot.ludounchained.controllerEndpoint.model.Game;
@@ -29,7 +28,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class LobbyBrowserActivity extends Activity {
 	protected LudoUnchainedApplication appState;
 	protected ListView mLobbyOverview;
-	protected ArrayList<Game> mLobbyList = new ArrayList<Game>();
+	protected GameListAdapter mGameListAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -136,9 +135,15 @@ public class LobbyBrowserActivity extends Activity {
 			protected void onPostExecute(final List<Game> result) {
 				super.onPostExecute(result);
 				
-				if (result != null) {
-					GameListAdapter gameListAdapter = new GameListAdapter(getApplicationContext(), result);
-					mLobbyOverview.setAdapter(gameListAdapter);
+				if (mGameListAdapter == null) {
+					if (result != null) {
+						mGameListAdapter = new GameListAdapter(getApplicationContext(), result);
+						mLobbyOverview.setAdapter(mGameListAdapter);
+					}
+				} else {
+					mGameListAdapter.setGames(result);
+					mGameListAdapter.notifyDataSetChanged();
+					mLobbyOverview.invalidate();
 				}
 			}
 		}.execute();		
@@ -146,11 +151,15 @@ public class LobbyBrowserActivity extends Activity {
 	
 	public class GameListAdapter extends ArrayAdapter<Game> {
 		private final Context context;
-		private final List<Game> objects;
+		private List<Game> objects;
 
 		public GameListAdapter(Context context, List<Game> objects) {
 			super(context, R.layout.lobby_row, objects);
 			this.context = context;
+			this.objects = objects;
+		}
+		
+		public void setGames(List<Game> objects) {
 			this.objects = objects;
 		}
 		

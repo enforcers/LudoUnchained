@@ -16,5 +16,6 @@ public interface EndpointService {
 	public Game leaveGame(Game game) throws RemoteException;
 	public Game startGame(Game game) throws RemoteException;
 	public List<Game> listGames() throws RemoteException;
+	public Game getGame(Game game) throws RemoteException;
 
 }

@@ -33,6 +33,9 @@ public class LudoUnchainedApplication extends Application {
 	
 	public void setSession(Session session) {
 		this.session = session;
+
+		if (session != null)
+			setUser(session.getUser());
 	}
 	
 	public User getUser() {

@@ -99,6 +99,8 @@ public class GameStateDrawer extends BaseAdapter {
 
 				break;
 			case RUNNING:
+				startGame.setVisibility(View.INVISIBLE);
+				requestJoin.setVisibility(View.INVISIBLE);
 				break;
 			case FINISHED:
 				break;
