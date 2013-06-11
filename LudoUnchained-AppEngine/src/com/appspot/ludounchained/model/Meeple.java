@@ -51,11 +51,29 @@ public class Meeple implements Serializable {
 	}
 	
 	public void setPosition(int position) {
-		this.position = position;
+		this.position = this.parsePosition(this.position, position);
 	}
 	
 	public com.appspot.ludounchained.cvo.Meeple getCVO() {
 		return new com.appspot.ludounchained.cvo.Meeple(this);
 	}
 	
+	public int parsePosition(int oldPosition,int newPosition){
+		switch(this.color){
+		case BLUE:
+			if(oldPosition<=10 && newPosition > 10){
+				return newPosition - 10 + 40;
+			}
+		case GREEN:
+			if(oldPosition<=20 && newPosition > 20){
+				return newPosition - 20 + 40;
+			}
+		case YELLOW:
+			if(oldPosition<=30 && newPosition > 30){
+				return newPosition - 30 + 40;
+			}
+		}
+		return newPosition;
+		
+	}
 }
