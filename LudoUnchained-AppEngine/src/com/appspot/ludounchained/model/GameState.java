@@ -26,8 +26,6 @@ public class GameState implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	List<Meeple> meeples;
-
-	private List<Meeple> meeple;
 	
 	// Spieler der am zug ist
 	public PlayerColor player;
@@ -45,7 +43,7 @@ public class GameState implements Serializable {
 	}
 	
 	public void setMeeples(List<Meeple> meeple) {
-		this.meeple = meeple;
+		this.meeples = meeple;
 	}
 	
 	public void addMeeple(Meeple meeple) {
@@ -70,6 +68,23 @@ public class GameState implements Serializable {
 			if (meeple.getColor() == color)
 				meeples.remove(meeple);
 		}
+	}
+	//total unschön irgendwie
+	public void executeTurn(Meeple meeple, int moves){
+		//neue position
+		for(Meeple m: this.meeples){
+			if (meeple.getPosition() == m.getPosition()){
+				m.setPosition(meeple.getPosition() + moves);
+			}
+		}
+		
+		//ggf gekickten meeple auf 0 setzen
+		for(Meeple m: this.meeples){
+			if (meeple.getPosition() + moves == m.getPosition()){
+				m.setPosition(0);
+			}
+		}
+		
 	}
 	
 	public com.appspot.ludounchained.cvo.GameState getCVO() {

@@ -8,6 +8,7 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.appspot.ludounchained.model.Meeple;
 import com.appspot.ludounchained.model.Game;
 import com.appspot.ludounchained.model.Game.State;
 import com.appspot.ludounchained.model.GameState;
@@ -333,6 +334,29 @@ public class ControllerEndpoint {
 		}
 		
 		return turn;
+	}
+	
+	@ApiMethod(name = "executeTurn")
+	public void executeTurn(			
+			@Named("sessionId") String sessionId,
+			Key gameId,
+			Meeple meeple,
+			int moves)
+	{
+		Session session = validateSession(sessionId);
+		Game game = null;
+		
+		EntityManager mgr = getEntityManager();
+		
+		try {
+			game = mgr.find(Game.class, gameId);
+			
+			if (game != null && game.getPlayer(game.getTurn()).equals(session.getUser())) {
+				game.getGameState().executeTurn(meeple, moves);
+			}
+		} finally {
+			mgr.close();
+		}
 	}
 	
 	private List<Session> getUserSessions(Game game) {
