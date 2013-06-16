@@ -1,102 +1,70 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".GameActivity" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:paddingBottom="@dimen/activity_vertical_margin"
+	android:paddingLeft="@dimen/activity_horizontal_margin"
+	android:paddingRight="@dimen/activity_horizontal_margin"
+	android:paddingTop="@dimen/activity_vertical_margin"
+	android:orientation="vertical"
+	android:gravity="center"
+	tools:context=".GameActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical"
-        android:gravity="center">
+	<RelativeLayout
+		android:layout_width="242dp"
+		android:layout_height="wrap_content" >
 
-        <RelativeLayout
-            android:layout_width="242dp"
-            android:layout_height="wrap_content" >
-            <TextView
-                android:id="@+id/game_playername_red"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true" />
+	    <TextView
+			android:id="@+id/game_playername_red"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true" />
+	
+	    <TextView
+	        android:id="@+id/game_playername_blue"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true" />
 
-            <TextView
-                android:id="@+id/game_playername_blue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true" />
-        </RelativeLayout>
-            
-	    <GridView
-	        android:id="@+id/game_field"
-	        android:layout_width="242dp"
-	        android:layout_height="242dp"
-	        android:background="@drawable/board"
-	        android:columnWidth="@dimen/game_field_size"
-	        android:numColumns="11" />
-	    
-        <RelativeLayout
-            android:layout_width="242dp"
-            android:layout_height="wrap_content" >
-            <TextView
-                android:id="@+id/game_playername_yellow"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true" />
+	</RelativeLayout>
+           
+	<GridView
+		android:id="@+id/game_field"
+		android:layout_width="242dp"
+		android:layout_height="242dp"
+		android:background="@drawable/board"
+		android:columnWidth="@dimen/game_field_size"
+		android:numColumns="11" />
+    
+		<RelativeLayout
+			android:layout_width="242dp"
+			android:layout_height="wrap_content" >
 
-            <TextView
-                android:id="@+id/game_playername_green"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true" />
-        </RelativeLayout>
+			<TextView
+				android:id="@+id/game_playername_yellow"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentLeft="true" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent">
-            
-            <ScrollView
-                android:id="@+id/game_event_scrollview"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-			    android:layout_above="@+id/game_start"
-			    android:layout_alignParentLeft="true"
-			    android:layout_alignParentTop="true"
-			    android:scrollbars="vertical">
-				<TextView
-				    android:id="@+id/game_event_view"
-				    android:layout_width="fill_parent"
-				    android:layout_height="wrap_content" />
-            </ScrollView>
+			<TextView
+			android:id="@+id/game_playername_green"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentRight="true" />
 
-			<Button
-			    android:id="@+id/game_start"
-			    style="@style/ButtonText"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:layout_alignParentBottom="true"
-			    android:background="@drawable/button_red"
-			    android:onClick="doGameStart"
-			    android:text="@string/game_start"
-			    android:visibility="invisible" />
-			
-			<Button
-			    android:id="@+id/game_request_join"
-			    style="@style/ButtonText"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:layout_alignParentBottom="true"
-			    android:background="@drawable/button_red"
-			    android:onClick="doRequestJoin"
-			    android:text="@string/game_request_join"
-			    android:visibility="invisible" />
-            
-        </RelativeLayout>
-    </LinearLayout>
+		</RelativeLayout>
 
-</RelativeLayout>
+		<ScrollView
+		    android:id="@+id/game_event_scrollview"
+		    android:layout_width="fill_parent"
+		    android:layout_height="match_parent"
+		    android:scrollbars="vertical" >
+
+			<TextView
+				android:id="@+id/game_event_view"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" />
+
+		</ScrollView>
+
+</LinearLayout>

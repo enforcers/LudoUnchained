@@ -64,7 +64,7 @@ public class CloudEndpointUtils {
           + "/_ah/api/");
     }
     
-    builder.setApplicationName("Ludo Unchained");
+    builder.setApplicationName("ludounchained");
 
     // only enable GZip when connecting to remote server
     final boolean enableGZip = builder.getRootUrl().startsWith("https:");

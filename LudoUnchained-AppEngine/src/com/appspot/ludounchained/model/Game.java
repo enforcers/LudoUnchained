@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,29 +30,26 @@ public class Game implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key gameId;
 
-	@Unowned private User redPlayer;
-	@Unowned private User bluePlayer;
-	@Unowned private User greenPlayer;
-	@Unowned private User yellowPlayer;
-	@Unowned List<User> spectators;
+	@Basic(fetch = FetchType.EAGER) @Unowned private User redPlayer;
+	@Basic(fetch = FetchType.EAGER) @Unowned private User bluePlayer;
+	@Basic(fetch = FetchType.EAGER) @Unowned private User greenPlayer;
+	@Basic(fetch = FetchType.EAGER) @Unowned private User yellowPlayer;
+	@Basic(fetch = FetchType.EAGER) @Unowned List<User> spectators;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	private GameState gameState;
 	
 	@Enumerated(EnumType.STRING)
 	private State state;
-	
-	@Enumerated(EnumType.STRING)
-	private PlayerColor turn;
 
 	public Game() {
 		super();
 	}
 	
 	public Game(User user) {
-		turn = PlayerColor.RED;
 		state = State.LOBBY;
 		gameState = new GameState();
+		gameState.setTurnColor(PlayerColor.RED);
 		setPlayer(PlayerColor.RED, user);
 	} 
 	
@@ -198,14 +197,6 @@ public class Game implements Serializable {
 	
 	public void setState(State state) {
 		this.state = state;
-	}
-	
-	public PlayerColor getTurn() {
-		return turn;
-	}
-	
-	public void setTurn(PlayerColor turn) {
-		this.turn = turn;
 	}
 	
 	public boolean isSinglePlayer() {

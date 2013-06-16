@@ -27,6 +27,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	}
 	
 	public static void register(Context context) {
+		GCMRegistrar.unregister(context);
 		GCMRegistrar.register(context, PROJECT_NUMBER);
 	}
 

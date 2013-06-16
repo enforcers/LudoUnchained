@@ -1,9 +1,35 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
+	<item
+		android:id="@+id/action_game_dice_roll"
+		android:title="@string/action_game_dice_roll"
+		android:showAsAction="always"
+		android:visible="false"
+		android:icon="@drawable/ic_menu_dice"
+		android:onClick="doDiceRoll" />
+
+	<item
+		android:id="@+id/action_game_request_join"
+		android:title="@string/action_game_request_join"
+		android:showAsAction="always"
+		android:visible="false"
+		android:icon="@drawable/ic_menu_request_join"
+		android:onClick="doRequestJoin" />
+
+	<item
+		android:id="@+id/action_game_start"
+		android:title="@string/action_game_start"
+		android:showAsAction="always"
+		android:visible="false"
+		android:icon="@drawable/ic_menu_start"
+		android:onClick="doGameStart" />
+
+	<item
+		android:id="@+id/action_game_back"
+		android:title="@string/action_game_back"
+		android:showAsAction="always"
+		android:visible="true"
+		android:icon="@drawable/ic_menu_revert"
+		android:onClick="doLeaveGame" />
 
 </menu>

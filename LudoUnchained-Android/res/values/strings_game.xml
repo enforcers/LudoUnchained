@@ -4,5 +4,9 @@
     <string name="title_activity_game">Game</string>
     <string name="game_start">Start</string>
     <string name="game_request_join">Request Join</string>
+    <string name="action_game_back">Back to Lobby Overview</string>
+    <string name="action_game_start">Start Game</string>
+    <string name="action_game_request_join">Request Join</string>
+    <string name="action_game_dice_roll">Roll Dice</string>
 
 </resources>

@@ -8,23 +8,22 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import com.appspot.ludounchained.model.Meeple;
 import com.appspot.ludounchained.model.Game;
 import com.appspot.ludounchained.model.Game.State;
 import com.appspot.ludounchained.model.GameState;
+import com.appspot.ludounchained.model.Meeple;
 import com.appspot.ludounchained.model.Session;
+import com.appspot.ludounchained.model.Turn;
 import com.appspot.ludounchained.model.User;
 import com.appspot.ludounchained.util.GCMSender;
 import com.appspot.ludounchained.util.MD5;
 import com.appspot.ludounchained.util.PlayerColor;
-import com.appspot.ludounchained.Turn;
 import com.appspot.ludounchained.EMF;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.datanucleus.query.JPACursorHelper;
 
 @Api(name = "controllerEndpoint", namespace = @ApiNamespace(ownerDomain = "appspot.com", ownerName = "appspot.com", packagePath = "ludounchained"))
@@ -195,7 +194,7 @@ public class ControllerEndpoint {
 		Game game = null;
 		GameState gameState = null;
 		com.appspot.ludounchained.cvo.Game result = null;
-		
+
 		EntityManager mgr = getEntityManager();
 
 		try {
@@ -204,8 +203,8 @@ public class ControllerEndpoint {
 			game.addSpectator(session.getUser());
 			gameState = game.getGameState();
 			gameState.getMeeples(); // lazy fetch
-			
-			//GCMSender.doSend(getSession(game.getRedPlayer()), session.getUser().getUsername() + " JOINED");
+
+			GCMSender.informUsers(getUserSessions(game), GCMSender.PLAYER_JOINED, session.getUser());
 		} finally {
 			mgr.close();
 		}
@@ -224,7 +223,7 @@ public class ControllerEndpoint {
 	public com.appspot.ludounchained.cvo.Game getGame(
 			@Named("sessionId") String sessionId,
 			@Named("gameId") long gameId) {
-		/*Session session = */validateSession(sessionId);
+		validateSession(sessionId);
 		Game game = null;
 		GameState gameState = null;
 		com.appspot.ludounchained.cvo.Game result = null;
@@ -255,9 +254,9 @@ public class ControllerEndpoint {
 	public com.appspot.ludounchained.cvo.Game startGame(
 			@Named("sessionId") String sessionId,
 			@Named("gameId") long gameId) {
-		/*Session session = */validateSession(sessionId);
+		validateSession(sessionId);
 		
-		Game game = null;//findGame(gameId);
+		Game game = null;
 		EntityManager mgr = getEntityManager();
 		
 		try {
@@ -301,6 +300,8 @@ public class ControllerEndpoint {
 				if (game.getPlayerCount() == 0) {
 					mgr.remove(game);
 				}
+				
+				GCMSender.informUsers(getUserSessions(game), GCMSender.PLAYER_LEFT, session.getUser());
 			}
 		} finally {
 			mgr.close();
@@ -314,51 +315,87 @@ public class ControllerEndpoint {
 	}
 	
 	@ApiMethod(name = "rollDice")
-	public Turn rollDice(
+	public com.appspot.ludounchained.cvo.Turn rollDice(
 			@Named("sessionId") String sessionId,
-			Key gameId) {
+			@Named("gameId") long gameId) {
 		Session session = validateSession(sessionId);
 		Game game = null;
+		GameState gameState = null;
 		Turn turn = null;
 		
 		EntityManager mgr = getEntityManager();
 		
 		try {
 			game = mgr.find(Game.class, gameId);
-			
-			if (game != null && game.getPlayer(game.getTurn()).equals(session.getUser())) {
-				turn = new Turn(game);
+			gameState = game.getGameState();
+
+			if (game != null && game.getPlayer(gameState.getTurnColor()).equals(session.getUser())) {
+				turn = new Turn(gameState);
 			}
 		} finally {
 			mgr.close();
 		}
-		
-		return turn;
+
+		return turn.getCVO();
 	}
-	
+
 	@ApiMethod(name = "executeTurn")
-	public void executeTurn(			
+	public void executeTurn(
 			@Named("sessionId") String sessionId,
-			Key gameId,
-			Meeple meeple,
-			int moves)
-	{
+			@Named("gameId") long gameId,
+			@Named("roll") int roll,
+			@Named("meepleId") long meepleId) {
 		Session session = validateSession(sessionId);
 		Game game = null;
+		GameState gameState = null;
 		
 		EntityManager mgr = getEntityManager();
 		
 		try {
 			game = mgr.find(Game.class, gameId);
+			gameState = game.getGameState();
 			
-			if (game != null && game.getPlayer(game.getTurn()).equals(session.getUser())) {
-				game.getGameState().executeTurn(meeple, moves);
+			for (Meeple m : gameState.getMeeples()) {
+				if (m.getId().getId() == meepleId) {
+					if (m.getPosition() == 0 && roll == 6)
+						m.setPosition(1);
+					else
+						m.setPosition(m.getPosition() + roll);
+				}
+			}
+			
+			// TODO: set next player turn
+			if (roll != 6) {
+				if (game.isSinglePlayer()) {
+					// TODO: AI Turn
+					System.out.println("AI Turn");
+					gameState.setTurnColor(PlayerColor.BLUE);
+					Turn turn = new Turn(gameState);
+
+					if (turn.getValidTurns().size() > 0) {
+						int AIRoll = turn.getDice().get(turn.getDice().size() - 1);
+						for (Meeple m : gameState.getMeeples()) {
+							if (m.getId().equals(turn.getValidTurns().get(0).getId())) {
+								System.out.println("Meeple found");
+								if (m.getPosition() == 0 && AIRoll == 6)
+									m.setPosition(1);
+								else
+									m.setPosition(m.getPosition() + AIRoll);
+							}
+						}
+						
+					}
+					gameState.setTurnColor(PlayerColor.RED);
+				} else {
+					// Next player in line
+				}
 			}
 		} finally {
 			mgr.close();
+			GCMSender.informUsers(getUserSessions(game), GCMSender.PLAYER_MOVE, session.getUser(), roll);
 		}
 	}
-	
+
 	private List<Session> getUserSessions(Game game) {
 		ArrayList<Session> result = new ArrayList<Session>();
 		Session session = null;

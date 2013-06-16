@@ -8,7 +8,7 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content" >
 
-	    <!-- Login Form Stars -->
+	    <!-- Login Form Starts -->
 		<LinearLayout
 			android:orientation="vertical"
 			android:layout_width="fill_parent"

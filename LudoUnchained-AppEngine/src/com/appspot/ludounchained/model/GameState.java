@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,7 +30,8 @@ public class GameState implements Serializable {
 	List<Meeple> meeples;
 	
 	// Spieler der am zug ist
-	public PlayerColor player;
+	@Enumerated(EnumType.STRING)
+	private PlayerColor turnColor;
 
 	public GameState() {
 		super();
@@ -44,6 +47,14 @@ public class GameState implements Serializable {
 	
 	public void setMeeples(List<Meeple> meeple) {
 		this.meeples = meeple;
+	}
+	
+	public PlayerColor getTurnColor() {
+		return turnColor;
+	}
+	
+	public void setTurnColor(PlayerColor color) {
+		this.turnColor = color;
 	}
 	
 	public void addMeeple(Meeple meeple) {

@@ -21,7 +21,6 @@ public class Game implements Serializable {
 	List<User> spectators;
 	private GameState gameState;
 	private State state;
-	private PlayerColor turn;
 
 	public Game() {
 		super();
@@ -31,7 +30,6 @@ public class Game implements Serializable {
 		if (game != null) {
 			gameId = game.getGameId();
 			state = game.getState();
-			turn = game.getTurn();
 
 			if (game.getRedPlayer() != null)
 				redPlayer = new User(game.getRedPlayer());
@@ -118,10 +116,6 @@ public class Game implements Serializable {
 	
 	public State getState() {
 		return state;
-	}
-	
-	public PlayerColor getTurn() {
-		return turn;
 	}
 	
 }

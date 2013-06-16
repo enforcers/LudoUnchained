@@ -3,7 +3,8 @@
 
     <string name="title_activity_register">Register New Account</string>
     <string name="sign_up">Sign Up</string>
-    <string name="link_to_login">Already have an Account?</string>
+    <string name="login_hint">You already have an account?</string>
+    <string name="link_to_login">Login here</string>
     <string name="register_failure">Account registration failed. Username in use?</string>
 
 </resources>

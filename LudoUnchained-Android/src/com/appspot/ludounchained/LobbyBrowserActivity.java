@@ -134,17 +134,9 @@ public class LobbyBrowserActivity extends Activity {
 			@Override
 			protected void onPostExecute(final List<Game> result) {
 				super.onPostExecute(result);
-				
-				if (mGameListAdapter == null) {
-					if (result != null) {
-						mGameListAdapter = new GameListAdapter(getApplicationContext(), result);
-						mLobbyOverview.setAdapter(mGameListAdapter);
-					}
-				} else {
-					mGameListAdapter.setGames(result);
-					mGameListAdapter.notifyDataSetChanged();
-					mLobbyOverview.invalidate();
-				}
+
+				mGameListAdapter = new GameListAdapter(getApplicationContext(), result);
+				mLobbyOverview.setAdapter(mGameListAdapter);
 			}
 		}.execute();		
 	}
@@ -161,6 +153,7 @@ public class LobbyBrowserActivity extends Activity {
 		
 		public void setGames(List<Game> objects) {
 			this.objects = objects;
+			this.notifyDataSetChanged();
 		}
 		
 		@Override

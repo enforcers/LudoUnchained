@@ -20,7 +20,7 @@ public class Meeple implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Key fieldId;
+	Key id;
 
 	@Basic
 	@Enumerated(EnumType.STRING)
@@ -31,6 +31,10 @@ public class Meeple implements Serializable {
 	
 	public Meeple() {
 		super();
+	}
+	
+	public Key getId() {
+		return id;
 	}
 	
 	public Meeple(PlayerColor color, int position) {
@@ -72,8 +76,22 @@ public class Meeple implements Serializable {
 			if(oldPosition<=30 && newPosition > 30){
 				return newPosition - 30 + 40;
 			}
+		default:
+			return newPosition;
 		}
-		return newPosition;
 		
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this)
+			return true;
+		
+		if (obj == null || obj.getClass() != this.getClass())
+			return false;
+		
+		Meeple meeple = (Meeple) obj;
+		
+		return (color.equals(meeple.getColor()) && position == meeple.getPosition());
 	}
 }

@@ -1,13 +1,12 @@
 package com.appspot.ludounchained.endpoint;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.appspot.ludounchained.LudoUnchainedApplication;
 import com.appspot.ludounchained.controllerEndpoint.ControllerEndpoint;
-import com.appspot.ludounchained.controllerEndpoint.model.CollectionResponseGame;
-import com.appspot.ludounchained.controllerEndpoint.model.Game;
-import com.appspot.ludounchained.controllerEndpoint.model.Session;
+import com.appspot.ludounchained.controllerEndpoint.model.*;
 import com.appspot.ludounchained.exception.InvalidLoginException;
 import com.appspot.ludounchained.exception.RemoteException;
 import com.appspot.ludounchained.util.CloudEndpointUtils;
@@ -132,16 +131,20 @@ public class EndpointServiceStub implements EndpointService {
 	}
 	
 	public List<Game> listGames() {
-		CollectionResponseGame result = new CollectionResponseGame();
+		List<Game> result = new ArrayList<Game>();
+		CollectionResponseGame response = new CollectionResponseGame();
 		ControllerEndpoint endpoint = getEndpoint();
 
 		try {
-			result = endpoint.listGame(appState.getSession().getSessionId()).execute();
+			response = endpoint.listGame(appState.getSession().getSessionId()).execute();
 		} catch (IOException e) {
     		e.printStackTrace();
     	}
 		
-		return result.getItems();
+		if (response.getItems() != null)
+			result = response.getItems();
+		
+		return result;
 	}
 	
 	public Game getGame(Game game) throws RemoteException {
@@ -156,6 +159,31 @@ public class EndpointServiceStub implements EndpointService {
     	}
 
 		return result;
+	}
+	
+	public Turn rollDice(Game game) {
+		Turn result = null;
+		ControllerEndpoint endpoint = getEndpoint();
+
+		try {
+			result = endpoint.rollDice(appState.getSession().getSessionId(), game.getGameId().getId()).execute();
+		} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+		
+		return result;
+	}
+	
+	public void executeTurn(Game game, Turn turn, Meeple meeple)
+			throws RemoteException {
+		ControllerEndpoint endpoint = getEndpoint();
+
+		try {
+			int roll = turn.getDice().get(turn.getDice().size() - 1);
+			endpoint.executeTurn(appState.getSession().getSessionId(), game.getGameId().getId(), roll, meeple.getId().getId()).execute();
+		} catch (IOException e) {
+    		e.printStackTrace();
+    	}
 	}
 	
 	private ControllerEndpoint getEndpoint() {
