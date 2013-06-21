@@ -98,42 +98,6 @@ public class GameState implements Serializable {
 		
 	}
 	
-	public int doAITurn() {
-		this.setTurnColor(PlayerColor.BLUE);
-		int AIRoll = 0;
-		
-		do {
-			Turn turn = new Turn(this);
-	
-			if (turn.getValidTurns().size() > 0) {
-				AIRoll = turn.getDice().get(turn.getDice().size() - 1);
-	
-				for (Meeple m : this.getMeeples()) {
-					if (m.getId().equals(turn.getValidTurns().get(0).getId())) {
-						if (m.getPosition() == 0 && AIRoll == 6)
-							m.moveFromHome();
-						else
-							m.moveBy(AIRoll);
-						
-						// Spieler schlagen
-						for (Meeple mo : this.getMeeples()) {
-							if (mo.getColor() != m.getColor()) {
-								if (mo.getPosition() == m.getPosition()) {
-									mo.moveToHome();
-								}
-							}
-						}
-					}
-				}
-				
-			}
-		} while (AIRoll == 6);
-		
-		this.setTurnColor(PlayerColor.RED);
-		
-		return AIRoll;
-	}
-	
 	public com.appspot.ludounchained.cvo.GameState getCVO() {
 		return new com.appspot.ludounchained.cvo.GameState(this);
 	}

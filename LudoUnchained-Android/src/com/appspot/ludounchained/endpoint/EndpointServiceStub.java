@@ -179,8 +179,8 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
 
 		try {
-			int roll = turn.getDice().get(turn.getDice().size() - 1);
-			endpoint.executeTurn(appState.getSession().getSessionId(), game.getGameId().getId(), roll, meeple.getId().getId()).execute();
+			//int roll = turn.getDice().get(turn.getDice().size() - 1);
+			endpoint.executeTurn(appState.getSession().getSessionId(), game.getGameId().getId(), turn.getId().getId(), meeple.getId().getId()).execute();
 		} catch (IOException e) {
     		e.printStackTrace();
     	}

@@ -8,10 +8,10 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.appspot.ludounchained.model.AIPlayer;
 import com.appspot.ludounchained.model.Game;
 import com.appspot.ludounchained.model.Game.State;
 import com.appspot.ludounchained.model.GameState;
-import com.appspot.ludounchained.model.Meeple;
 import com.appspot.ludounchained.model.Session;
 import com.appspot.ludounchained.model.Turn;
 import com.appspot.ludounchained.model.User;
@@ -331,6 +331,7 @@ public class ControllerEndpoint {
 
 			if (game != null && game.getPlayer(gameState.getTurnColor()).equals(session.getUser())) {
 				turn = new Turn(gameState);
+				mgr.persist(turn);
 			}
 		} finally {
 			mgr.close();
@@ -338,17 +339,50 @@ public class ControllerEndpoint {
 
 		return turn.getCVO();
 	}
-/*
+
 	@ApiMethod(name = "executeTurn")
 	public void executeTurn(
 			@Named("sessionId") String sessionId,
 			@Named("gameId") long gameId,
 			@Named("turnId") long turnId,
 			@Named("meepleId") long meepleId) {
+		Session session = validateSession(sessionId);
+		Turn turn = null;
+		Game game = null;
+		AIPlayer AI = null;
 		
+		EntityManager mgr = getEntityManager();
+		
+		try {
+			game = mgr.find(Game.class, gameId);
+			turn = mgr.find(Turn.class, turnId);
+			turn.execute(meepleId);
+			
+			// TODO: set next player turn
+			if (turn.getRoll() != 6) {
+				if (game.isSinglePlayer()) {
+					AI = new AIPlayer(game.getGameState());
+					AI.play();
+				} else {
+					//game.nextPlayer();
+				}
+			}
+		} finally {
+			mgr.close();
+			GCMSender.informUsers(getUserSessions(game), GCMSender.PLAYER_MOVE, session.getUser(), turn.getRoll());
+			
+			if (AI != null) {
+				for (Turn t : AI.getTurns()) {
+					if (t.getValidTurns().size() > 0) {
+						int AIRoll = t.getDice().get(t.getDice().size() - 1);
+						GCMSender.informUsers(getUserSessions(game), GCMSender.COMPUTER_MOVE, AIRoll);
+					}
+				}
+			}
+		}
 	}
-*/
 
+/*
 	@ApiMethod(name = "executeTurn")
 	public void executeTurn(
 			@Named("sessionId") String sessionId,
@@ -358,7 +392,7 @@ public class ControllerEndpoint {
 		Session session = validateSession(sessionId);
 		Game game = null;
 		GameState gameState = null;
-		int AIRoll = 0;
+		AIPlayer AI = null;
 		
 		EntityManager mgr = getEntityManager();
 		
@@ -389,7 +423,8 @@ public class ControllerEndpoint {
 			if (roll != 6) {
 				if (game.isSinglePlayer()) {
 					// TODO: AI Turn
-					AIRoll = gameState.doAITurn();
+					AI = new AIPlayer(gameState);
+					AI.play();
 				} else {
 					//gameState.nextPlayer();
 				}
@@ -398,10 +433,17 @@ public class ControllerEndpoint {
 			mgr.close();
 			GCMSender.informUsers(getUserSessions(game), GCMSender.PLAYER_MOVE, session.getUser(), roll);
 			
-			if (AIRoll > 0)
-				GCMSender.informUsers(getUserSessions(game), GCMSender.COMPUTER_MOVE, AIRoll);
+			if (AI != null) {
+				for (Turn t : AI.getTurns()) {
+					if (t.getValidTurns().size() > 0) {
+						int AIRoll = t.getDice().get(t.getDice().size() - 1);
+						GCMSender.informUsers(getUserSessions(game), GCMSender.COMPUTER_MOVE, AIRoll);
+					}
+				}
+			}
 		}
 	}
+*/
 
 	private List<Session> getUserSessions(Game game) {
 		ArrayList<Session> result = new ArrayList<Session>();

@@ -81,7 +81,7 @@ public class GameStateDrawer extends BaseAdapter {
 				position = this.gameMeepleMap.get(position - 1);
 			} else if (position > 40 && position <= 44) {
 				// im Ziel
-				position = getPlayerEndMeepleMap(color).get(position - 40);
+				position = getPlayerEndMeepleMap(color).get(position - 40 - 1);
 			} else {
 				break;
 			}

@@ -62,27 +62,26 @@ public class Meeple implements Serializable {
 
 		tempPosition += amount;
 
-		if (tempPosition != 40)
-			tempPosition = tempPosition % 40;
+		tempPosition = tempPosition % 40;
 
 		switch (color) {
 			case RED:
 				if (position <= 40 && position + amount > 40) {
-					tempPosition += 40 - 1;
+					tempPosition += 40;
 				}
 				break;
 			case BLUE:
 				if (position <= 10 && position + amount > 10) {
-					tempPosition += 40 - 1 - 10;
+					tempPosition = tempPosition % 10 + 40;
 				}
 				break;
 			case GREEN:
 				if (position <= 20 && position + amount > 20)
-					tempPosition += 40 - 1 - 20;
+					tempPosition = tempPosition % 20 + 40;
 				break;
 			case YELLOW:
 				if (position <= 30 && position + amount > 30)
-					tempPosition += 40 - 1 - 30;
+					tempPosition = tempPosition % 30 + 40;
 				break;
 		}
 		

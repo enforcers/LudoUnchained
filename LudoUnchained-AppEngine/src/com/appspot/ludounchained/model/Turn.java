@@ -5,13 +5,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.persistence.Basic;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.datanucleus.annotations.Unowned;
+
+@Entity
 public class Turn implements Serializable {
 
 	private static final long serialVersionUID = 8923953940132844166L;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Key id;
+
+	@ElementCollection
 	private List<Integer> dice;
-	private List<Meeple> validTurns;
-	private GameState gameState;
+
+	@Basic(fetch = FetchType.EAGER) @Unowned private List<Meeple> validTurns;
+	@Basic(fetch = FetchType.EAGER) @Unowned private GameState gameState;
+
 	public Turn() {
 		super();
 	}
@@ -22,6 +41,10 @@ public class Turn implements Serializable {
 		dice = new ArrayList<Integer>();
 		validTurns = new ArrayList<Meeple>();
 		calculateValidTurns();
+	}
+	
+	public Key getId() {
+		return id;
 	}
 	
 	public List<Integer> getDice() {
@@ -111,14 +134,35 @@ public class Turn implements Serializable {
 	    return result;
 	}
 	
-	public /*EVENT TYP ENUM*/ void execute() {
+	public /*EVENT TYP ENUM*/ void execute(long meepleId) {
 		// TODO Implementierung
 		// gibt event typ als enum zurück
 		// z.b. erfolgreich ausgeführt, spieler geschlagen, zieht aus haus, zieht ins ziel haus
 		// evtl. mit verweis auf farbe
 		// dafür muss Turn objekt persistiert werden (verweis auf ID bei execute() in controllerendpoint)
 		
-		
+		for (Meeple m : gameState.getMeeples()) {
+			if (m.getId().getId() == meepleId) {
+				// Figur bewegen
+				if (m.getPosition() == 0 && getRoll() == 6)
+					m.moveFromHome();
+				else
+					m.moveBy(getRoll());
+				
+				// Spieler schlagen
+				for (Meeple mo : gameState.getMeeples()) {
+					if (mo.getColor() != m.getColor()) {
+						if (mo.getPosition() == m.getPosition()) {
+							mo.moveToHome();
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public int getRoll() {
+		return getDice().get(getDice().size() - 1);
 	}
 	
 	public com.appspot.ludounchained.cvo.Turn getCVO() {
