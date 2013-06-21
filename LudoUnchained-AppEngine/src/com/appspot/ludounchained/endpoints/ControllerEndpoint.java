@@ -338,6 +338,16 @@ public class ControllerEndpoint {
 
 		return turn.getCVO();
 	}
+/*
+	@ApiMethod(name = "executeTurn")
+	public void executeTurn(
+			@Named("sessionId") String sessionId,
+			@Named("gameId") long gameId,
+			@Named("turnId") long turnId,
+			@Named("meepleId") long meepleId) {
+		
+	}
+*/
 
 	@ApiMethod(name = "executeTurn")
 	public void executeTurn(
@@ -348,6 +358,7 @@ public class ControllerEndpoint {
 		Session session = validateSession(sessionId);
 		Game game = null;
 		GameState gameState = null;
+		int AIRoll = 0;
 		
 		EntityManager mgr = getEntityManager();
 		
@@ -357,10 +368,20 @@ public class ControllerEndpoint {
 			
 			for (Meeple m : gameState.getMeeples()) {
 				if (m.getId().getId() == meepleId) {
+					// Figur bewegen
 					if (m.getPosition() == 0 && roll == 6)
-						m.setPosition(1);
+						m.moveFromHome();
 					else
-						m.setPosition(m.getPosition() + roll);
+						m.moveBy(roll);
+					
+					// Spieler schlagen
+					for (Meeple mo : gameState.getMeeples()) {
+						if (mo.getColor() != m.getColor()) {
+							if (mo.getPosition() == m.getPosition()) {
+								mo.moveToHome();
+							}
+						}
+					}
 				}
 			}
 			
@@ -368,31 +389,17 @@ public class ControllerEndpoint {
 			if (roll != 6) {
 				if (game.isSinglePlayer()) {
 					// TODO: AI Turn
-					System.out.println("AI Turn");
-					gameState.setTurnColor(PlayerColor.BLUE);
-					Turn turn = new Turn(gameState);
-
-					if (turn.getValidTurns().size() > 0) {
-						int AIRoll = turn.getDice().get(turn.getDice().size() - 1);
-						for (Meeple m : gameState.getMeeples()) {
-							if (m.getId().equals(turn.getValidTurns().get(0).getId())) {
-								System.out.println("Meeple found");
-								if (m.getPosition() == 0 && AIRoll == 6)
-									m.setPosition(1);
-								else
-									m.setPosition(m.getPosition() + AIRoll);
-							}
-						}
-						
-					}
-					gameState.setTurnColor(PlayerColor.RED);
+					AIRoll = gameState.doAITurn();
 				} else {
-					// Next player in line
+					//gameState.nextPlayer();
 				}
 			}
 		} finally {
 			mgr.close();
 			GCMSender.informUsers(getUserSessions(game), GCMSender.PLAYER_MOVE, session.getUser(), roll);
+			
+			if (AIRoll > 0)
+				GCMSender.informUsers(getUserSessions(game), GCMSender.COMPUTER_MOVE, AIRoll);
 		}
 	}
 

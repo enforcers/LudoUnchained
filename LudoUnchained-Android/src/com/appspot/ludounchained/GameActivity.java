@@ -29,7 +29,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class GameActivity extends Activity {
 	protected LudoUnchainedApplication appState;
@@ -61,8 +60,6 @@ public class GameActivity extends Activity {
 				Meeple meeple = (Meeple) parent.getItemAtPosition(position);
 				
 				executeTurn(meeple);
-				
-				Toast.makeText(getApplicationContext(), "POSITION: " + position + " ; " + meeple.getPosition(), Toast.LENGTH_SHORT).show();
 			}
 			
 		});
@@ -235,6 +232,13 @@ public class GameActivity extends Activity {
 	}
 	
 	public void doDiceRoll(MenuItem m) {
+		if (mDiceRoll != null) {
+			if (mDiceRoll.getValidTurns() != null && mDiceQue == null) {
+				appState.notify("You must move a meeple before you roll the dice again.");
+				return;
+			}
+		}
+
 		if (mDiceQue == null) {
 			new BackgroundTask.SilentTask<Turn>() {
 				@Override
@@ -263,7 +267,7 @@ public class GameActivity extends Activity {
 			getNextDiceRoll();
 		}
 	}
-	
+
 	private void getNextDiceRoll() {
 		if (mDiceRoll != null) {
 			mGameStateAdapter.setValidMeeples(null);
@@ -313,6 +317,7 @@ public class GameActivity extends Activity {
 			protected void onPostExecute(final Void result) {
 				super.onPostExecute(result);
 				
+				mDiceRoll = null;
 				mCurrentDiceRoll = 0;
 				mGameStateAdapter.setValidMeeples(null);
 				mGameStateAdapter.notifyDataSetChanged();

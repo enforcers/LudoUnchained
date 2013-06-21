@@ -8,6 +8,7 @@ import com.appspot.ludounchained.endpoint.EndpointServiceStub;
 
 import android.app.Application;
 import android.content.Context;
+import android.widget.Toast;
 
 public class LudoUnchainedApplication extends Application {
 	private EndpointService endpoint;
@@ -60,5 +61,9 @@ public class LudoUnchainedApplication extends Application {
 	
 	public void setEndpoint(EndpointService endpoint) {
 		this.endpoint = endpoint;
+	}
+	
+	public void notify(String message) {
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 	}
 }

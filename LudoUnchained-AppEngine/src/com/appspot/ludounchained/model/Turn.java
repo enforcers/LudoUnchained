@@ -63,25 +63,62 @@ public class Turn implements Serializable {
 	
 	private boolean isValid(Meeple meeple, int roll){
 		
+		boolean result = false;
+		
 		// neue figur nur bei 6
 		if (meeple.getPosition() == 0 && roll != 6){
 			return false;
 		}
 		
 		//springen ins nichts
-		if (meeple.parsePosition(meeple.getPosition(), meeple.getPosition() + roll) > 44){
+		if (meeple.simulateMoveBy(roll) <= 44) {
+			result = true;
+		} else {
 			return false;
 		}
-		
+
 		//springen auf eigene figur
     	for(Meeple meeple2: gameState.getMeeples()){
-    		if (meeple.parsePosition(meeple.getPosition(), meeple.getPosition() + roll) == meeple2.getPosition()
-    				&& meeple2.getColor() == gameState.getTurnColor()){
-    			return false;
+    		if (meeple2.getColor() == gameState.getTurnColor()) {
+    			if (meeple.simulateMoveBy(roll) == meeple2.getPosition()
+        				&& meeple.getPosition() != 0) {
+    				result = false;
+    			}
+
+        		if (meeple.getPosition() == 0 && roll == 6) {
+        			switch (gameState.getTurnColor()) {
+	    				case RED:
+	    					if (meeple2.getPosition() == 1)
+	    						return false;
+	    					break;
+	    				case BLUE:
+	    					if (meeple2.getPosition() == 11)
+	    						return false;
+	    					break;
+	    				case GREEN:
+	    					if (meeple2.getPosition() == 21)
+	    						return false;
+	    					break;
+	    				case YELLOW:
+	    					if (meeple2.getPosition() == 31)
+	    						return false;
+	    					break;
+        			}
+        		}
     		}
     	}
     	
-	    return true;
+	    return result;
+	}
+	
+	public /*EVENT TYP ENUM*/ void execute() {
+		// TODO Implementierung
+		// gibt event typ als enum zurück
+		// z.b. erfolgreich ausgeführt, spieler geschlagen, zieht aus haus, zieht ins ziel haus
+		// evtl. mit verweis auf farbe
+		// dafür muss Turn objekt persistiert werden (verweis auf ID bei execute() in controllerendpoint)
+		
+		
 	}
 	
 	public com.appspot.ludounchained.cvo.Turn getCVO() {

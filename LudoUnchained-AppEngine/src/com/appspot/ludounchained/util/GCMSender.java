@@ -16,6 +16,7 @@ public class GCMSender {
 	public static final int PLAYER_LEFT = 2;
 	public static final int PLAYER_ACCEPTED = 3;
 	public static final int PLAYER_MOVE = 4;
+	public static final int COMPUTER_MOVE = 5;
 	
 	public static void informUsers(List<Session> receivers, int event) {
 		String eventText = getEventText(event);
@@ -29,6 +30,16 @@ public class GCMSender {
 	
 	public static void informUsers(List<Session> receivers, int event, User user, int diceRoll) {
 		String eventText = String.format(getEventText(event), user.getUsername(), diceRoll);
+		
+		for (Session session : receivers) {
+			String regId = session.getRegistrationId();
+			
+			doSend(regId, eventText, true);
+		}
+	}
+	
+	public static void informUsers(List<Session> receivers, int event, int diceRoll) {
+		String eventText = String.format(getEventText(event), diceRoll);
 		
 		for (Session session : receivers) {
 			String regId = session.getRegistrationId();
@@ -80,10 +91,11 @@ public class GCMSender {
 	private static String getEventText(int event) {
 		switch (event) {
 			case 0: return "The game was started!";
-			case 1: return "Player %s is now spectating.";
-			case 2: return "Player %s left the game.";
-			case 3: return "Player %s has been accepted as active player.";
-			case 4: return "Player %s rolled a %d and moved a meeple.";
+			case 1: return "%s is now spectating.";
+			case 2: return "%s left the game.";
+			case 3: return "%s has been accepted as active player.";
+			case 4: return "%s rolled a %d and moved a meeple.";
+			case 5: return "Computer rolled a %d and moved a meeple.";
 			default: return null;
 		}
 	}
