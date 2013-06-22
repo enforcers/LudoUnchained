@@ -1,0 +1,84 @@
+{
+  "extends" : "thirdParty.api",
+  "abstract" : false,
+  "root" : "https://myapp.appspot.com/_ah/api",
+  "name" : "controllerEndpoint",
+  "version" : "v1",
+  "defaultVersion" : false,
+  "adapter" : {
+    "bns" : "https://myapp.appspot.com/_ah/spi",
+    "deadline" : 10.0,
+    "type" : "lily"
+  },
+  "auth" : {
+    "allowCookieAuth" : false
+  },
+  "frontendLimits" : {
+    "unregisteredUserQps" : -1,
+    "unregisteredQps" : -1,
+    "unregisteredDaily" : -1,
+    "rules" : [ ]
+  },
+  "cacheControl" : {
+    "type" : "no-cache",
+    "maxAge" : 0
+  },
+  "ownerDomain" : "appspot.com",
+  "ownerName" : "appspot.com",
+  "packagePath" : "ludounchained",
+  "methods" : {
+    "controllerEndpoint.getLudoScore" : {
+      "path" : "scorecollection/{username}/{gameId}",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.appspot.unchained.endpoints.ControllerEndpoint.getScore",
+      "request" : {
+        "parameters" : {
+          "username" : {
+            "type" : "string",
+            "required" : true
+          },
+          "gameId" : {
+            "type" : "int32",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    }
+  },
+  "descriptor" : {
+    "schemas" : {
+      "Score" : {
+        "id" : "Score",
+        "type" : "object",
+        "properties" : {
+        }
+      },
+      "ScoreCollection" : {
+        "id" : "ScoreCollection",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "Score"
+            }
+          }
+        }
+      }
+    },
+    "methods" : {
+      "com.appspot.unchained.endpoints.ControllerEndpoint.getScore" : {
+        "response" : {
+          "$ref" : "ScoreCollection"
+        }
+      }
+    }
+  }
+}
