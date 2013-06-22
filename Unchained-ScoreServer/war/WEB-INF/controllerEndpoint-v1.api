@@ -25,7 +25,7 @@
   },
   "ownerDomain" : "appspot.com",
   "ownerName" : "appspot.com",
-  "packagePath" : "ludounchained",
+  "packagePath" : "unchained",
   "methods" : {
     "controllerEndpoint.getLudoScore" : {
       "path" : "scorecollection/{username}/{gameId}",

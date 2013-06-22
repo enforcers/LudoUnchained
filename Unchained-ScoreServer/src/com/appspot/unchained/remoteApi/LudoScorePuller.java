@@ -17,13 +17,13 @@ import javax.persistence.EntityManager;
 public class LudoScorePuller {
     private final RemoteApiOptions options;
 
-    LudoScorePuller(String username, String password)
+    public LudoScorePuller(String username, String password)
         throws IOException {
         // Authenticating with username and password is slow, so we'll do it
         // once during construction and then store the credentials for reuse.
         this.options = new RemoteApiOptions()
             .server("localhost", 8888)
-            .credentials("LudoUnchained.appspot.com", "443");
+            .credentials(username,password);
         RemoteApiInstaller installer = new RemoteApiInstaller();
         installer.install(options);
         try {
@@ -35,27 +35,31 @@ public class LudoScorePuller {
         }
     }
 
-    void pullLudoScore(Entity entity) throws IOException {
+   public void pullLudoScore() throws IOException {
         RemoteApiInstaller installer = new RemoteApiInstaller();
         installer.install(options);
         EntityManager em = EMF.get().createEntityManager();
         
+        Score testscore = new Score("test", 50,1);
+        
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         Query query = new Query("Score");
         PreparedQuery pq = ds.prepare(query);
-        Transaction tx = ds.beginTransaction();        
+        //Transaction tx = ds.beginTransaction();        
         try {
             for (Entity result : pq.asIterable()) {
             	  String player = (String) result.getProperty("player");
-            	  int points = (int) result.getProperty("score");
-            	  Score score = new Score(player,points,1);
+            	  long points = (long)result.getProperty("score");
+            	  Score score = new Score(player,(int)points,1);
             	  em.persist(score);
-            	  ds.delete(tx,result.getKey());
+            	  
+            	  ds.delete(result.getKey());
             }
-            tx.commit();
+            //tx.commit();
         } finally {
-        	tx.rollback();
+        	//tx.rollback();
             installer.uninstall();
+            em.close();
         }
     }
 	

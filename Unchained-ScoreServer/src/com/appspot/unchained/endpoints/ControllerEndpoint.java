@@ -11,11 +11,11 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 
-@Api(name = "controllerEndpoint", namespace = @ApiNamespace(ownerDomain = "appspot.com", ownerName = "appspot.com", packagePath = "ludounchained"))
+@Api(name = "controllerEndpoint", namespace = @ApiNamespace(ownerDomain = "appspot.com", ownerName = "appspot.com", packagePath = "unchained"))
 public class ControllerEndpoint {
+	
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "getLudoScore")
-	
 	// return the top 10
 	public List<com.appspot.unchained.cvo.Score> getScore(@Named("username") String username,@Named("gameId") int gameId){
 		EntityManager mgr = getEntityManager();

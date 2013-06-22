@@ -9,6 +9,10 @@
         <properties>
             <property name="datanucleus.NontransactionalRead" value="true"/>
             <property name="datanucleus.NontransactionalWrite" value="true"/>
+            <property name="datanucleus.DetachAllOnCommit" value="true" />
+            <property name="datanucleus.DetachOnClose" value="true" />
+            <property name="datanucleus.appengine.ignorableMetaDataBehavior" value="NONE"/>
+            <property name="datanucleus.appengine.autoCreateDatastoreTxns" value="false"/>
             <property name="datanucleus.ConnectionURL" value="appengine"/>
         </properties>
     </persistence-unit>

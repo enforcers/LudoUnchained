@@ -8,7 +8,6 @@ import javax.persistence.Id;
 
 import com.google.appengine.api.datastore.Key;
 
-
 @Entity
 public class Score implements Serializable{
 	@Id
@@ -17,6 +16,7 @@ public class Score implements Serializable{
 	
 	private String player;
 	private int score;
+	
 	private int gameId; //ludo = 1
 	
 	public Score() {
