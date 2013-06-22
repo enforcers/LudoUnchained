@@ -46,6 +46,7 @@
         </activity>
 
         <service android:name="com.appspot.ludounchained.endpoint.GCMIntentService" />
+
         <receiver
             android:name="com.appspot.ludounchained.endpoint.GCMReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
@@ -59,7 +60,8 @@
 
                 <category android:name="com.appspot.ludounchained" />
             </intent-filter>
-        </receiver>
+        </receiver>
+
         <activity
             android:name="com.appspot.ludounchained.LobbyBrowserActivity"
             android:label="@string/title_activity_lobby_browser" >
@@ -68,6 +70,10 @@
             android:name="com.appspot.ludounchained.GameActivity"
             android:label="@string/title_activity_game"
             android:uiOptions="splitActionBarWhenNarrow" >
+        </activity>
+        <activity
+            android:name="com.appspot.ludounchained.HighScoreActivity"
+            android:label="@string/title_activity_high_score" >
         </activity>
     </application>
 
