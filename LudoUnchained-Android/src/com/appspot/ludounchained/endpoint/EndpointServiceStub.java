@@ -107,7 +107,7 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
     	
     	try {
-    		result = endpoint.leaveGame(appState.getSession().getSessionId(), game.getGameId().getId()).execute();
+    		result = endpoint.leaveGame(appState.getSession().getSessionId(), appState.getGame().getGameId().getId()).execute();
     		appState.setGame(null);
     	} catch (IOException e) {
     		e.printStackTrace();
@@ -116,12 +116,32 @@ public class EndpointServiceStub implements EndpointService {
 		return result;
 	}
 	
+	public void requestJoinGame(Game game) throws RemoteException {
+		ControllerEndpoint endpoint = getEndpoint();
+    	
+    	try {
+    		endpoint.requestJoinGame(appState.getSession().getSessionId(), appState.getGame().getGameId().getId()).execute();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+	}
+
+	public void acceptJoinGame(Game game, String requesterSessionId) throws RemoteException {
+		ControllerEndpoint endpoint = getEndpoint();
+    	
+    	try {
+    		endpoint.acceptJoinGame(appState.getSession().getSessionId(), appState.getGame().getGameId().getId(), requesterSessionId).execute();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+	}
+	
 	public Game startGame(Game game) {
 		Game result = null;
 		ControllerEndpoint endpoint = getEndpoint();
 
     	try {
-    		result = endpoint.startGame(appState.getSession().getSessionId(), game.getGameId().getId()).execute();
+    		result = endpoint.startGame(appState.getSession().getSessionId(), appState.getGame().getGameId().getId()).execute();
     		appState.setGame(result);
     	} catch (IOException e) {
     		e.printStackTrace();
@@ -166,7 +186,7 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
 
 		try {
-			result = endpoint.rollDice(appState.getSession().getSessionId(), game.getGameId().getId()).execute();
+			result = endpoint.rollDice(appState.getSession().getSessionId(), appState.getGame().getGameId().getId()).execute();
 		} catch (IOException e) {
     		e.printStackTrace();
     	}
@@ -179,8 +199,15 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
 
 		try {
-			//int roll = turn.getDice().get(turn.getDice().size() - 1);
-			endpoint.executeTurn(appState.getSession().getSessionId(), game.getGameId().getId(), turn.getId().getId(), meeple.getId().getId()).execute();
+			String sessionId = appState.getSession().getSessionId();
+			long gameId = appState.getGame().getGameId().getId();
+			long turnId = turn.getId().getId();
+			long meepleId = 0;
+			
+			if (meeple != null)
+				meepleId = meeple.getId().getId();
+			
+			endpoint.executeTurn(sessionId, gameId, turnId, meepleId).execute();
 		} catch (IOException e) {
     		e.printStackTrace();
     	}

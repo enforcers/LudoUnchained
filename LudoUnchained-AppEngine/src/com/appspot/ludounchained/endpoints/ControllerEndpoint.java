@@ -223,6 +223,64 @@ public class ControllerEndpoint {
 		return result;
 	}
 	
+	@ApiMethod(name = "requestJoinGame")
+	public void requestJoinGame(
+			@Named("sessionId") String sessionId,
+			@Named("gameId") long gameId) {
+		Session session = validateSession(sessionId);
+		Game game = null;
+		Session lobbyLeader = null;
+
+		EntityManager mgr = getEntityManager();
+
+		try {
+			game = mgr.find(Game.class, gameId);
+			lobbyLeader = getSession(game.getRedPlayer());
+		} finally {
+			
+			if (lobbyLeader != null) {
+				GCMSender.informJoinRequest(lobbyLeader, GCMSender.PLAYER_REQUEST_JOIN, session);
+			}
+			mgr.close();
+		}
+	}
+	
+	@ApiMethod(name = "acceptJoinGame")
+	public void acceptJoinGame(
+			@Named("sessionId") String sessionId,
+			@Named("gameId") long gameId,
+			@Named("requesterSessionId") String requesterSessionId) {
+		Session session = validateSession(sessionId);
+		Session requesterSession = validateSession(requesterSessionId);
+		boolean playerSet = false;
+
+		Game game = null;
+		Session lobbyLeader = null;
+
+		EntityManager mgr = getEntityManager();
+
+		try {
+			game = mgr.find(Game.class, gameId);
+			lobbyLeader = getSession(game.getRedPlayer());
+			
+			System.out.println(requesterSession.getUser().getUsername());
+			if (lobbyLeader.getSessionId().equals(session.getSessionId())) { // check for lobby leader
+				if (game.getPlayerCount() < 4) {
+					PlayerColor nextFreeColor = PlayerColor.values()[game.getPlayerCount()];
+					game.removeSpectator(requesterSession.getUser());
+					game.setPlayer(nextFreeColor, requesterSession.getUser());
+					playerSet = true;
+					System.out.println("ADDED AS " + nextFreeColor.toString());
+				}
+			}
+		} finally {
+			mgr.close();
+
+			if (playerSet)
+				GCMSender.informUsers(getUserSessions(game), GCMSender.PLAYER_ACCEPTED, requesterSession.getUser());
+		}
+	}
+	
 	@ApiMethod(name = "getGame")
 	public com.appspot.ludounchained.cvo.Game getGame(
 			@Named("sessionId") String sessionId,
@@ -299,6 +357,11 @@ public class ControllerEndpoint {
 
 			if (game != null) {
 				game.setPlayer(game.getPlayerColor(session.getUser()), null);
+				
+				if (game.getState() == Game.State.RUNNING && game.getPlayers().contains(session.getUser())) {
+					// TODO Highscore abziehen, laufendes Spiel verlassen
+				}
+
 				game.removeSpectator(session.getUser());
 
 				if (game.getPlayerCount() == 0) {
@@ -350,9 +413,9 @@ public class ControllerEndpoint {
 			@Named("gameId") long gameId,
 			@Named("turnId") long turnId,
 			@Named("meepleId") long meepleId) {
-		Session session = validateSession(sessionId);
+		validateSession(sessionId);
 		Turn turn = null;
-		Game game = null;
+		Game game = null;	
 		AIPlayer AI = null;
 		
 		EntityManager mgr = getEntityManager();
@@ -360,94 +423,35 @@ public class ControllerEndpoint {
 		try {
 			game = mgr.find(Game.class, gameId);
 			turn = mgr.find(Turn.class, turnId);
+
 			turn.execute(meepleId);
 			
-			// TODO: set next player turn
+			GCMSender.informUsers(getUserSessions(game), turn);
+
 			if (turn.getRoll() != 6) {
 				if (game.isSinglePlayer()) {
+					game.nextPlayer();
+
 					AI = new AIPlayer(game.getGameState());
 					AI.play();
-				} else {
-					//game.nextPlayer();
-				}
-			}
-		} finally {
-			mgr.close();
-			GCMSender.informUsers(getUserSessions(game), GCMSender.PLAYER_MOVE, session.getUser(), turn.getRoll());
-			
-			if (AI != null) {
-				for (Turn t : AI.getTurns()) {
-					if (t.getValidTurns().size() > 0) {
-						int AIRoll = t.getDice().get(t.getDice().size() - 1);
-						GCMSender.informUsers(getUserSessions(game), GCMSender.COMPUTER_MOVE, AIRoll);
-					}
-				}
-			}
-		}
-	}
 
-/*
-	@ApiMethod(name = "executeTurn")
-	public void executeTurn(
-			@Named("sessionId") String sessionId,
-			@Named("gameId") long gameId,
-			@Named("roll") int roll,
-			@Named("meepleId") long meepleId) {
-		Session session = validateSession(sessionId);
-		Game game = null;
-		GameState gameState = null;
-		AIPlayer AI = null;
-		
-		EntityManager mgr = getEntityManager();
-		
-		try {
-			game = mgr.find(Game.class, gameId);
-			gameState = game.getGameState();
-			
-			for (Meeple m : gameState.getMeeples()) {
-				if (m.getId().getId() == meepleId) {
-					// Figur bewegen
-					if (m.getPosition() == 0 && roll == 6)
-						m.moveFromHome();
-					else
-						m.moveBy(roll);
-					
-					// Spieler schlagen
-					for (Meeple mo : gameState.getMeeples()) {
-						if (mo.getColor() != m.getColor()) {
-							if (mo.getPosition() == m.getPosition()) {
-								mo.moveToHome();
-							}
-						}
-					}
-				}
-			}
-			
-			// TODO: set next player turn
-			if (roll != 6) {
-				if (game.isSinglePlayer()) {
-					// TODO: AI Turn
-					AI = new AIPlayer(gameState);
-					AI.play();
+					game.nextPlayer();
 				} else {
-					//gameState.nextPlayer();
+					game.nextPlayer();
 				}
 			}
 		} finally {
 			mgr.close();
-			GCMSender.informUsers(getUserSessions(game), GCMSender.PLAYER_MOVE, session.getUser(), roll);
 			
 			if (AI != null) {
 				for (Turn t : AI.getTurns()) {
 					if (t.getValidTurns().size() > 0) {
-						int AIRoll = t.getDice().get(t.getDice().size() - 1);
-						GCMSender.informUsers(getUserSessions(game), GCMSender.COMPUTER_MOVE, AIRoll);
+						GCMSender.informUsers(getUserSessions(game), t);
 					}
 				}
 			}
 		}
 	}
-*/
 
 	private List<Session> getUserSessions(Game game) {
 		ArrayList<Session> result = new ArrayList<Session>();
