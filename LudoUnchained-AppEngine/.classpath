@@ -4,6 +4,5 @@
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/adt/LudoUnchained/LudoUnchained-AppEngine/war/WEB-INF/lib/gcm-server.jar"/>
-	<classpathentry kind="lib" path="C:/adt/eclipse/plugins/com.google.appengine.eclipse.sdkbundle_1.8.0/appengine-java-sdk-1.8.0/lib/appengine-remote-api.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

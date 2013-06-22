@@ -19,6 +19,9 @@ public class Score implements Serializable{
 	private int score;
 	private int gameId; //ludo = 1
 	
+	public Score() {
+		super();
+	}
 	public Score (String player, int score, int gameId){
 		this.player = player;
 		this.score = score;

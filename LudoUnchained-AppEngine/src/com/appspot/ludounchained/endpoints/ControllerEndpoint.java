@@ -12,6 +12,7 @@ import com.appspot.ludounchained.model.AIPlayer;
 import com.appspot.ludounchained.model.Game;
 import com.appspot.ludounchained.model.Game.State;
 import com.appspot.ludounchained.model.GameState;
+import com.appspot.ludounchained.model.Score;
 import com.appspot.ludounchained.model.Session;
 import com.appspot.ludounchained.model.Turn;
 import com.appspot.ludounchained.model.User;
@@ -39,6 +40,9 @@ public class ControllerEndpoint {
 
 		try {
 			user = mgr.find(User.class, username);
+			// test daten für scoreserver
+			mgr.persist(new Score(username,2));
+			mgr.persist(new Score(username,1));
 		} finally {
 			mgr.close();
 		}
