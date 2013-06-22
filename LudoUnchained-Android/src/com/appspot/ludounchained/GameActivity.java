@@ -98,6 +98,7 @@ public class GameActivity extends Activity {
 		super.onResume();
 		
 		IntentFilter intentFilter = new IntentFilter("com.google.android.c2dm.intent.RECEIVE");
+		final Context _this = this;
 		
 		mReceiver = new BroadcastReceiver() {
 
@@ -106,6 +107,26 @@ public class GameActivity extends Activity {
 				final Intent message = intent;
 				final ScrollView scrollView = (ScrollView) findViewById(R.id.game_event_scrollview);
 				final TextView eventView = (TextView) findViewById(R.id.game_event_view);
+
+				final String requestJoinUser = message.getStringExtra("requestJoinUser");
+				final String requestJoinSession = message.getStringExtra("requestJoinSession");
+				
+				if (requestJoinUser != null && requestJoinSession != null) {
+					new AlertDialog.Builder(_this)
+						.setMessage(requestJoinUser + " wants to join this game. Do you accept?")
+						.setCancelable(false)
+						.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								doAcceptJoin(requestJoinSession);
+							}
+						})
+						.setNegativeButton("No", null)
+						.show();
+					
+					return;
+				}
 
 				if (message.getBooleanExtra("refresh", true)) { // TODO: boolean refresh check?
 					new BackgroundTask.SilentTask<Game>() {
@@ -228,7 +249,45 @@ public class GameActivity extends Activity {
 	}
 	
 	public void doRequestJoin(MenuItem m) {
-		
+		new BackgroundTask.Task<Void>(this) {
+			@Override
+			protected Void doInBackground(Void... params) {
+				try {
+					appState.getEndpoint().requestJoinGame(appState.getGame());
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				return null;
+			}
+			
+			@Override
+			protected void onPostExecute(Void result) {
+				super.onPostExecute(result);
+			}
+		}.execute();
+	}
+	
+	public void doAcceptJoin(final String requesterSessionId) {
+		new BackgroundTask.Task<Void>(this) {
+			@Override
+			protected Void doInBackground(Void... params) {
+				try {
+					appState.getEndpoint().acceptJoinGame(appState.getGame(), requesterSessionId);
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				return null;
+			}
+			
+			@Override
+			protected void onPostExecute(Void result) {
+				super.onPostExecute(result);
+			}
+		}.execute();
 	}
 	
 	public void doDiceRoll(MenuItem m) {
@@ -288,8 +347,12 @@ public class GameActivity extends Activity {
 	
 				mDiceQue.remove(roll);
 				
-				if (mDiceQue.size() == 0)
+				if (mDiceQue.size() == 0) {
 					mDiceQue = null;
+					
+					if (mDiceRoll.getValidTurns() == null)
+						executeTurn(null);
+				}
 	
 				break;
 			}

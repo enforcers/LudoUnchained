@@ -6,18 +6,39 @@ import java.util.List;
 import java.util.Random;
 
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.appspot.ludounchained.util.PlayerColor;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.datanucleus.annotations.Unowned;
 
 @Entity
 public class Turn implements Serializable {
+	
+	public enum Event {
+		MOVE, BEAT, HOUSE_START, HOUSE_END, NO_MOVE;
+		
+		private PlayerColor p1 = null;
+		private PlayerColor p2 = null;
+		
+		public void setPlayer1(PlayerColor p1) {
+			this.p1 = p1;
+		}
+		
+		public void setPlayer2(PlayerColor p2) {
+			this.p2 = p2;
+		}
+		
+		public PlayerColor getPlayer1() { return p1; }
+		public PlayerColor getPlayer2() { return p2; }
+	}
 
 	private static final long serialVersionUID = 8923953940132844166L;
 
@@ -30,6 +51,9 @@ public class Turn implements Serializable {
 
 	@Basic(fetch = FetchType.EAGER) @Unowned private List<Meeple> validTurns;
 	@Basic(fetch = FetchType.EAGER) @Unowned private GameState gameState;
+	
+	@Column(nullable = true) @Enumerated
+	private Event event;
 
 	public Turn() {
 		super();
@@ -134,31 +158,54 @@ public class Turn implements Serializable {
 	    return result;
 	}
 	
-	public /*EVENT TYP ENUM*/ void execute(long meepleId) {
-		// TODO Implementierung
-		// gibt event typ als enum zurück
-		// z.b. erfolgreich ausgeführt, spieler geschlagen, zieht aus haus, zieht ins ziel haus
-		// evtl. mit verweis auf farbe
-		// dafür muss Turn objekt persistiert werden (verweis auf ID bei execute() in controllerendpoint)
+	public Event execute(long meepleId) {
+		Event result = Event.NO_MOVE;
 		
 		for (Meeple m : gameState.getMeeples()) {
 			if (m.getId().getId() == meepleId) {
+
 				// Figur bewegen
-				if (m.getPosition() == 0 && getRoll() == 6)
+				if (m.getPosition() == 0 && getRoll() == 6) {
+					result = Event.HOUSE_START;
+
 					m.moveFromHome();
-				else
+				} else {
+					result = Event.MOVE;
+
+					if (m.getPosition() <= 40 && m.simulateMoveBy(getRoll()) > 40)
+						result = Event.HOUSE_END;
+
 					m.moveBy(getRoll());
+				}
 				
 				// Spieler schlagen
 				for (Meeple mo : gameState.getMeeples()) {
 					if (mo.getColor() != m.getColor()) {
-						if (mo.getPosition() == m.getPosition()) {
+						if (mo.getPosition() == m.getPosition() && mo.getPosition() <= 40) {
+							result = Event.BEAT;
+							result.setPlayer2(mo.getColor());
+
 							mo.moveToHome();
+							
+							break;
 						}
 					}
 				}
+				
+				result.setPlayer1(m.getColor());
+				
+				break;
 			}
 		}
+		
+		result.setPlayer1(gameState.getTurnColor());
+
+		this.event = result;
+		return result;
+	}
+	
+	public Event getEvent() {
+		return event;
 	}
 	
 	public int getRoll() {

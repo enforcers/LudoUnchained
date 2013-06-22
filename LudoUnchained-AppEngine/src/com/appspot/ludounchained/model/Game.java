@@ -203,6 +203,24 @@ public class Game implements Serializable {
 		return getPlayerCount() == 1;
 	}
 	
+	public void nextPlayer() {
+		if (isSinglePlayer()) {
+			if (gameState.getTurnColor() == PlayerColor.RED) {
+				gameState.setTurnColor(PlayerColor.BLUE);
+			} else {
+				gameState.setTurnColor(PlayerColor.RED);
+			}
+		} else {
+			PlayerColor next = gameState.getTurnColor();
+
+			do {
+				next = next.getNext();
+			} while (getPlayer(next) == null);
+			
+			gameState.setTurnColor(next);
+		}
+	}
+	
 	public com.appspot.ludounchained.cvo.Game getCVO() {
 		return new com.appspot.ludounchained.cvo.Game(this);
 	}

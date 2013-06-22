@@ -55,6 +55,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Log.i("onMessage called", "NOW");
 		Intent notificationIntent = new Intent(context, GameActivity.class);
 		notificationIntent.putExtra("message", intent.getStringExtra("message"));
+		notificationIntent.putExtra("requestJoinUser", intent.getStringExtra("requestJoinUser"));
+		notificationIntent.putExtra("requestJoinSession", intent.getStringExtra("requestJoinSession"));
+
 		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		//startActivity(notificationIntent);
 		this.sendBroadcast(intent);

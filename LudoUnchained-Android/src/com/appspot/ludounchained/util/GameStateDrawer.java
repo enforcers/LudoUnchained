@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,21 +97,20 @@ public class GameStateDrawer extends BaseAdapter {
 		User currentUser = appState.getSession().getUser();
 		User turn = PlayerColor.valueOf(gameState.getTurnColor()).getPlayer(game);
 		
+		Log.v("CURRENT USER", currentUser.toString());
+		Log.v("TURN USER", turn.toString());
+		
 		SparseBooleanArray menuItems = activity.getMenuItemsMap();
 
 		switch (state) {
 			case LOBBY:
 				if (game.getRedPlayer().equals(currentUser)) // check if lobby leader
 					menuItems.put(R.id.action_game_start, true);
-				
-				if (!game.getPlayers().contains(currentUser))
-					menuItems.put(R.id.action_game_request_join, true);
+					menuItems.put(R.id.action_game_request_join, !game.getPlayers().contains(currentUser));
 
 				break;
 			case RUNNING:
-				if (turn.equals(currentUser))
-					menuItems.put(R.id.action_game_dice_roll, true);
-
+				menuItems.put(R.id.action_game_dice_roll, turn.equals(currentUser));
 				menuItems.put(R.id.action_game_start, false);
 				menuItems.put(R.id.action_game_request_join, false);
 
