@@ -1,5 +1,6 @@
 package com.appspot.ludounchained.endpoints;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import com.appspot.ludounchained.util.GCMSender;
 import com.appspot.ludounchained.util.MD5;
 import com.appspot.ludounchained.util.PlayerColor;
 import com.appspot.ludounchained.EMF;
+import com.appspot.ludounchained.remoteapi.LudoScorePuller;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -451,6 +453,56 @@ public class ControllerEndpoint {
 				}
 			}
 		}
+	}
+	
+	@ApiMethod(name = "listScore")
+	public CollectionResponse<Score> listScore(
+			@Nullable @Named("cursor") String cursorString,
+			@Nullable @Named("limit") Integer limit) {
+
+		EntityManager mgr = null;
+		Cursor cursor = null;
+		List<Score> scores = null;
+		
+		
+		try {
+			LudoScorePuller puller = new LudoScorePuller("test@example.com","");
+			scores  = puller.pullLudoScores();
+		} catch (IOException e) {
+
+		}
+		
+		/*
+		try {
+			mgr = getEntityManager();
+			Query query = mgr.createQuery("select sum(s.score) From Score s Group by s.player where s.gameId = 1");
+			if (cursorString != null && cursorString != "") {
+				cursor = Cursor.fromWebSafeString(cursorString);
+				query.setHint(JPACursorHelper.CURSOR_HINT, cursor);
+			}
+
+			if (limit != null) {
+				query.setFirstResult(0);
+				query.setMaxResults(limit);
+			}
+
+			execute = (List<Score>) query.getResultList();
+
+			cursor = JPACursorHelper.getCursor(execute);
+			if (cursor != null)
+				cursorString = cursor.toWebSafeString();
+
+			// Tight loop for fetching all entities from datastore and accomodate
+			// for lazy fetch.
+			for (Score obj : cvoScores)
+				;
+		} finally {
+			mgr.close();
+		}
+		*/
+
+		return CollectionResponse.<Score> builder().setItems(scores)
+				.setNextPageToken(cursorString).build();
 	}
 
 	private List<Session> getUserSessions(Game game) {

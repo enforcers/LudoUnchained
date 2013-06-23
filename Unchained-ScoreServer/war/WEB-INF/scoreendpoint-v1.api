@@ -2,7 +2,7 @@
   "extends" : "thirdParty.api",
   "abstract" : false,
   "root" : "https://ludoscoreserver.appspot.com/_ah/api",
-  "name" : "controllerEndpoint",
+  "name" : "scoreendpoint",
   "version" : "v1",
   "defaultVersion" : false,
   "adapter" : {
@@ -25,24 +25,24 @@
   },
   "ownerDomain" : "appspot.com",
   "ownerName" : "appspot.com",
-  "packagePath" : "unchained",
+  "packagePath" : "unchained.model",
   "methods" : {
-    "controllerEndpoint.getLudoScore" : {
-      "path" : "scorecollection/{username}/{gameId}",
+    "scoreendpoint.listScore" : {
+      "path" : "score",
       "httpMethod" : "GET",
       "scopes" : [ ],
       "audiences" : [ ],
       "clientIds" : [ ],
-      "rosyMethod" : "com.appspot.unchained.endpoints.ControllerEndpoint.getScore",
+      "rosyMethod" : "com.appspot.unchained.endpoints.ScoreEndpoint.listScore",
       "request" : {
         "parameters" : {
-          "username" : {
+          "cursor" : {
             "type" : "string",
-            "required" : true
+            "required" : false
           },
-          "gameId" : {
+          "limit" : {
             "type" : "int32",
-            "required" : true
+            "required" : false
           }
         },
         "body" : "empty"
@@ -54,14 +54,8 @@
   },
   "descriptor" : {
     "schemas" : {
-      "Score" : {
-        "id" : "Score",
-        "type" : "object",
-        "properties" : {
-        }
-      },
-      "ScoreCollection" : {
-        "id" : "ScoreCollection",
+      "CollectionResponse_Score" : {
+        "id" : "CollectionResponse_Score",
         "type" : "object",
         "properties" : {
           "items" : {
@@ -69,14 +63,23 @@
             "items" : {
               "$ref" : "Score"
             }
+          },
+          "nextPageToken" : {
+            "type" : "string"
           }
+        }
+      },
+      "Score" : {
+        "id" : "Score",
+        "type" : "object",
+        "properties" : {
         }
       }
     },
     "methods" : {
-      "com.appspot.unchained.endpoints.ControllerEndpoint.getScore" : {
+      "com.appspot.unchained.endpoints.ScoreEndpoint.listScore" : {
         "response" : {
-          "$ref" : "ScoreCollection"
+          "$ref" : "CollectionResponse_Score"
         }
       }
     }
