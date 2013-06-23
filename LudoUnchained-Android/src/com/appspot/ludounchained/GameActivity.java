@@ -228,7 +228,7 @@ public class GameActivity extends Activity {
 			@Override
 			protected Game doInBackground(Void... params) {
 				try {
-					return appState.getEndpoint().startGame(appState.getGame());
+					return appState.getEndpoint().startGame();
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -253,7 +253,7 @@ public class GameActivity extends Activity {
 			@Override
 			protected Void doInBackground(Void... params) {
 				try {
-					appState.getEndpoint().requestJoinGame(appState.getGame());
+					appState.getEndpoint().requestJoinGame();
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -274,7 +274,7 @@ public class GameActivity extends Activity {
 			@Override
 			protected Void doInBackground(Void... params) {
 				try {
-					appState.getEndpoint().acceptJoinGame(appState.getGame(), requesterSessionId);
+					appState.getEndpoint().acceptJoinGame(requesterSessionId);
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -303,7 +303,7 @@ public class GameActivity extends Activity {
 				@Override
 				protected Turn doInBackground(Void... params) {
 					try {
-						return appState.getEndpoint().rollDice(appState.getGame());
+						return appState.getEndpoint().rollDice();
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -367,7 +367,7 @@ public class GameActivity extends Activity {
 			@Override
 			protected Void doInBackground(Void... params) {
 				try {
-					appState.getEndpoint().executeTurn(appState.getGame(), mDiceRoll, meeple);
+					appState.getEndpoint().executeTurn(mDiceRoll, meeple);
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -394,7 +394,7 @@ public class GameActivity extends Activity {
 			@Override
 			protected Game doInBackground(Void... params) {
 				try {
-					return appState.getEndpoint().leaveGame(appState.getGame());
+					return appState.getEndpoint().leaveGame();
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

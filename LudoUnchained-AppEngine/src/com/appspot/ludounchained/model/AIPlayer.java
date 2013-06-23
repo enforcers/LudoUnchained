@@ -16,14 +16,17 @@ public class AIPlayer {
 		
 		do {
 			Turn turn = new Turn(gameState);
-			turns.add(turn);
 			
-			if (turn.getValidTurns().size() > 0) {
-				AIRoll = turn.getDice().get(turn.getDice().size() - 1);
-				
-				turn.execute(turn.getValidTurns().get(0).getId().getId());
-			}
+			Meeple meeple = null;
 
+			// Pick of first meeple in queue, simple AI
+			if (turn.getValidTurns().size() > 0)
+				meeple = turn.getValidTurns().get(0);
+
+			AIRoll = turn.getRoll();
+			turn.execute(meeple);
+
+			turns.add(turn);
 		} while (AIRoll == 6);
 	}
 	

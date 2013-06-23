@@ -36,7 +36,7 @@ public class Game implements Serializable {
 	@Basic(fetch = FetchType.EAGER) @Unowned private User yellowPlayer;
 	@Basic(fetch = FetchType.EAGER) @Unowned List<User> spectators;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private GameState gameState;
 	
 	@Enumerated(EnumType.STRING)
@@ -205,6 +205,12 @@ public class Game implements Serializable {
 	
 	public void nextPlayer() {
 		if (isSinglePlayer()) {
+			if (isFinished(PlayerColor.RED) || isFinished(PlayerColor.BLUE)) {
+				setState(State.FINISHED);
+				
+				return;
+			}
+
 			if (gameState.getTurnColor() == PlayerColor.RED) {
 				gameState.setTurnColor(PlayerColor.BLUE);
 			} else {
@@ -213,12 +219,40 @@ public class Game implements Serializable {
 		} else {
 			PlayerColor next = gameState.getTurnColor();
 
+			if (getPlayerCount() - getFinishedUsers().size() <= 1) {
+				setState(State.FINISHED);
+
+				return;
+			}
+			
 			do {
 				next = next.getNext();
-			} while (getPlayer(next) == null);
+			} while (getPlayer(next) == null || isFinished(next));
 			
 			gameState.setTurnColor(next);
 		}
+	}
+	
+	private List<User> getFinishedUsers() {
+		List<User> result = new ArrayList<User>();
+		
+		for (User user : getPlayers()) {
+			if (isFinished(getPlayerColor(user)))
+				result.add(user);
+		}
+		
+		return result;
+	}
+	
+	private boolean isFinished(PlayerColor color) {
+		boolean result = true;
+		
+		for (Meeple meeple : gameState.getMeeples()) {
+			if (meeple.getColor() == color && meeple.getPosition() <= 40)
+				result = false;
+		}
+		
+		return result;
 	}
 	
 	public com.appspot.ludounchained.cvo.Game getCVO() {

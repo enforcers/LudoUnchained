@@ -12,13 +12,13 @@ public interface EndpointService {
 	public Session register(String username, String password) throws RemoteException;
 	public Game newGame() throws RemoteException;
 	public Game joinGame(Game game) throws RemoteException;
-	public Game leaveGame(Game game) throws RemoteException;
-	public void requestJoinGame(Game game) throws RemoteException;
-	public void acceptJoinGame(Game game, String requesterSessionId) throws RemoteException;
-	public Game startGame(Game game) throws RemoteException;
+	public Game leaveGame() throws RemoteException;
+	public void requestJoinGame() throws RemoteException;
+	public void acceptJoinGame(String requesterSessionId) throws RemoteException;
+	public Game startGame() throws RemoteException;
 	public List<Game> listGames() throws RemoteException;
 	public Game getGame(Game game) throws RemoteException;
-	public Turn rollDice(Game game) throws RemoteException;
-	public void executeTurn(Game game, Turn turn, Meeple meeple) throws RemoteException;
+	public Turn rollDice() throws RemoteException;
+	public void executeTurn(Turn turn, Meeple meeple) throws RemoteException;
 
 }

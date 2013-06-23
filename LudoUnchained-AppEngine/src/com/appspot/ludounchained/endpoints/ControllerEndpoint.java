@@ -358,6 +358,7 @@ public class ControllerEndpoint {
 			game = mgr.find(Game.class, gameId);
 
 			if (game != null) {
+				boolean singlePlayer = game.isSinglePlayer();
 				game.setPlayer(game.getPlayerColor(session.getUser()), null);
 				
 				if (game.getState() == Game.State.RUNNING && game.getPlayers().contains(session.getUser())) {
@@ -368,6 +369,8 @@ public class ControllerEndpoint {
 
 				if (game.getPlayerCount() == 0) {
 					mgr.remove(game);
+				} else if(game.getPlayerCount() == 1 && !singlePlayer) {
+					game.setState(Game.State.FINISHED);
 				}
 				
 				GCMSender.informUsers(getUserSessions(game), GCMSender.PLAYER_LEFT, session.getUser());
@@ -417,7 +420,7 @@ public class ControllerEndpoint {
 			@Named("meepleId") long meepleId) {
 		validateSession(sessionId);
 		Turn turn = null;
-		Game game = null;	
+		Game game = null;
 		AIPlayer AI = null;
 		
 		EntityManager mgr = getEntityManager();
@@ -425,7 +428,7 @@ public class ControllerEndpoint {
 		try {
 			game = mgr.find(Game.class, gameId);
 			turn = mgr.find(Turn.class, turnId);
-
+			
 			turn.execute(meepleId);
 			
 			GCMSender.informUsers(getUserSessions(game), turn);
@@ -442,14 +445,14 @@ public class ControllerEndpoint {
 					game.nextPlayer();
 				}
 			}
+
+			mgr.remove(turn);
 		} finally {
 			mgr.close();
 			
 			if (AI != null) {
 				for (Turn t : AI.getTurns()) {
-					if (t.getValidTurns().size() > 0) {
-						GCMSender.informUsers(getUserSessions(game), t);
-					}
+					GCMSender.informUsers(getUserSessions(game), t);
 				}
 			}
 		}

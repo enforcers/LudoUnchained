@@ -61,7 +61,7 @@ public class Turn implements Serializable {
 
 	public Turn(GameState gameState) {
 		this.gameState = gameState;
-
+		
 		dice = new ArrayList<Integer>();
 		validTurns = new ArrayList<Meeple>();
 		calculateValidTurns();
@@ -156,6 +156,15 @@ public class Turn implements Serializable {
     	}
     	
 	    return result;
+	}
+	
+	public Event execute(Meeple meeple) {
+		long meepleId = 0;
+		
+		if (meeple != null)
+			meepleId = meeple.getId().getId();
+
+		return execute(meepleId);
 	}
 	
 	public Event execute(long meepleId) {

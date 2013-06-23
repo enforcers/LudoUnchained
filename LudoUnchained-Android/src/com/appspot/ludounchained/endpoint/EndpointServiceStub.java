@@ -102,7 +102,7 @@ public class EndpointServiceStub implements EndpointService {
 		return result;
 	}
 	
-	public Game leaveGame(Game game) {
+	public Game leaveGame() {
 		Game result = null;
 		ControllerEndpoint endpoint = getEndpoint();
     	
@@ -116,7 +116,7 @@ public class EndpointServiceStub implements EndpointService {
 		return result;
 	}
 	
-	public void requestJoinGame(Game game) throws RemoteException {
+	public void requestJoinGame() throws RemoteException {
 		ControllerEndpoint endpoint = getEndpoint();
     	
     	try {
@@ -126,7 +126,7 @@ public class EndpointServiceStub implements EndpointService {
     	}
 	}
 
-	public void acceptJoinGame(Game game, String requesterSessionId) throws RemoteException {
+	public void acceptJoinGame(String requesterSessionId) throws RemoteException {
 		ControllerEndpoint endpoint = getEndpoint();
     	
     	try {
@@ -136,7 +136,7 @@ public class EndpointServiceStub implements EndpointService {
     	}
 	}
 	
-	public Game startGame(Game game) {
+	public Game startGame() {
 		Game result = null;
 		ControllerEndpoint endpoint = getEndpoint();
 
@@ -181,7 +181,7 @@ public class EndpointServiceStub implements EndpointService {
 		return result;
 	}
 	
-	public Turn rollDice(Game game) {
+	public Turn rollDice() {
 		Turn result = null;
 		ControllerEndpoint endpoint = getEndpoint();
 
@@ -194,7 +194,7 @@ public class EndpointServiceStub implements EndpointService {
 		return result;
 	}
 	
-	public void executeTurn(Game game, Turn turn, Meeple meeple)
+	public void executeTurn(Turn turn, Meeple meeple)
 			throws RemoteException {
 		ControllerEndpoint endpoint = getEndpoint();
 

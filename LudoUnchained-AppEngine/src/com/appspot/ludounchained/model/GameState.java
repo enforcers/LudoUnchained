@@ -80,23 +80,6 @@ public class GameState implements Serializable {
 				meeples.remove(meeple);
 		}
 	}
-	//total unschön irgendwie
-	public void executeTurn(Meeple meeple, int moves){
-		//neue position
-		for(Meeple m: this.meeples){
-			if (meeple.getPosition() == m.getPosition()){
-				m.setPosition(meeple.getPosition() + moves);
-			}
-		}
-		
-		//ggf gekickten meeple auf 0 setzen
-		for(Meeple m: this.meeples){
-			if (meeple.getPosition() + moves == m.getPosition()){
-				m.setPosition(0);
-			}
-		}
-		
-	}
 	
 	public com.appspot.ludounchained.cvo.GameState getCVO() {
 		return new com.appspot.ludounchained.cvo.GameState(this);
