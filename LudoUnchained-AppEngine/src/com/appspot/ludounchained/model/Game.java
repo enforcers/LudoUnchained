@@ -91,6 +91,15 @@ public class Game implements Serializable {
 		return null;
 	}
 	
+	/**
+	 * This method adds a Player to the game.
+	 * 
+	 * @author Lorenz Mintert
+	 * 
+	 * @param color Color of the player
+	 * @param user User to set playing of given color
+	 * 
+	 */
 	public void setPlayer(PlayerColor color, User user) {
 		if (color == null)
 			return;
