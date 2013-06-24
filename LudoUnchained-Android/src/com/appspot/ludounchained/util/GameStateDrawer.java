@@ -111,6 +111,10 @@ public class GameStateDrawer extends BaseAdapter {
 				menuItems.put(R.id.action_game_dice_roll, turn.equals(currentUser));
 				menuItems.put(R.id.action_game_start, false);
 				menuItems.put(R.id.action_game_request_join, false);
+				
+				if(turn.equals(currentUser)) {
+					activity.startTurnCountdown();
+				}
 
 				break;
 			case FINISHED:

@@ -463,8 +463,8 @@ public class ControllerEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("limit") Integer limit) {
 
-		EntityManager mgr = null;
-		Cursor cursor = null;
+		//EntityManager mgr = null;
+		//Cursor cursor = null;
 		List<Score> scores = null;
 		
 		

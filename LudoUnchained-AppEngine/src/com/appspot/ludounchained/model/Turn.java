@@ -90,6 +90,7 @@ public class Turn implements Serializable {
 	private void calculateValidTurns() {
 		int roll;
 		int rollCount = 0;
+		boolean anotherRoll = true;
 
 		do {
 			roll = rollDice();
@@ -99,13 +100,19 @@ public class Turn implements Serializable {
 			for(Meeple meeple: gameState.getMeeples()){
 				if(meeple.getColor() == gameState.getTurnColor()){
 					if (isValid(meeple, roll)){
-						if (!validTurns.contains(meeple))
+						if (!validTurns.contains(meeple)) {
 							validTurns.add(meeple);
-					}	
+							anotherRoll = false;
+						}
+					}
+					
+					// only give a max of 3 rolls, if can't move any other meeple with a 1
+					if (roll != 1 && isValid(meeple, 1))
+						anotherRoll = false;
 				}		
 			}
 		
-		} while (validTurns.size() == 0 && rollCount < 3);
+		} while (anotherRoll && rollCount < 3);
 	}
 	
 	private boolean isValid(Meeple meeple, int roll){

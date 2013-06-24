@@ -10,6 +10,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.remoteapi.RemoteApiInstaller;
 import com.google.appengine.tools.remoteapi.RemoteApiOptions;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -34,7 +35,7 @@ public class LudoScorePuller {
         RemoteApiInstaller installer = new RemoteApiInstaller();
         installer.install(options);
         EntityManager em = EMF.get().createEntityManager();
-        List<Score> scores = null;
+        List<Score> scores = new ArrayList<Score>();
               
         try {
         	DatastoreService ds = DatastoreServiceFactory.getDatastoreService();

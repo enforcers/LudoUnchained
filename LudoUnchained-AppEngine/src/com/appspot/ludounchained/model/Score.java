@@ -22,8 +22,21 @@ public class Score implements Serializable {
 	public Score() {
 		super();
 	}
+
 	public Score (String player, int score){
 		this.player = player;
 		this.score = score;
+	}
+	
+	public String getPlayer() {
+		return player;
+	}
+	
+	public int getScore() {
+		return score;
+	}
+	
+	public int getGameId() {
+		return gameid;
 	}
 }

@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.remoteapi.RemoteApiInstaller;
 import com.google.appengine.tools.remoteapi.RemoteApiOptions;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.persistence.EntityManager;
 
@@ -38,23 +39,35 @@ public class LudoScorePuller {
    public void pullLudoScore() throws IOException {
         RemoteApiInstaller installer = new RemoteApiInstaller();
         installer.install(options);
-        EntityManager em = EMF.get().createEntityManager();
  
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         Query query = new Query("Score");
-        PreparedQuery pq = ds.prepare(query);      
+        PreparedQuery pq = ds.prepare(query);
+        
+        ArrayList<Score> scores = new ArrayList<Score>();
+
         try {
             for (Entity result : pq.asIterable()) {
             	  String player = (String) result.getProperty("player");
             	  long points = (long)result.getProperty("score");
+            	  
             	  Score score = new Score(player,(int)points,1);
-            	  em.persist(score);
+            	  scores.add(score);
             	  
             	  ds.delete(result.getKey());
             }
         } finally {
-        	em.close();
             installer.uninstall();
+        }
+        
+        EntityManager em = EMF.get().createEntityManager();
+
+        try {
+        	for (Score score : scores) {
+        		em.persist(score);
+        	}
+        } finally {
+        	em.close();
         }
     }
 	

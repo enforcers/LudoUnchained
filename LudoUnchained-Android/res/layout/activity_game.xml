@@ -1,18 +1,15 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:paddingBottom="@dimen/activity_vertical_margin"
-	android:paddingLeft="@dimen/activity_horizontal_margin"
-	android:paddingRight="@dimen/activity_horizontal_margin"
-	android:paddingTop="@dimen/activity_vertical_margin"
-	android:orientation="vertical"
-	android:gravity="center"
 	tools:context=".GameActivity">
 
 	<RelativeLayout
+	    android:id="@+id/game_playersnames_above"
 		android:layout_width="242dp"
-		android:layout_height="wrap_content" >
+		android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true"
+		android:layout_alignParentTop="true" >
 
 	    <TextView
 			android:id="@+id/game_playername_red"
@@ -32,39 +29,55 @@
 		android:id="@+id/game_field"
 		android:layout_width="242dp"
 		android:layout_height="242dp"
+		android:layout_centerHorizontal="true"
+		android:layout_below="@+id/game_playersnames_above"
 		android:background="@drawable/board"
 		android:columnWidth="@dimen/game_field_size"
 		android:numColumns="11" />
     
-		<RelativeLayout
-			android:layout_width="242dp"
-			android:layout_height="wrap_content" >
+	<RelativeLayout
+	    android:id="@+id/game_playersnames_below"
+		android:layout_width="242dp"
+		android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true"
+		android:layout_below="@+id/game_field" >
 
-			<TextView
-				android:id="@+id/game_playername_yellow"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_alignParentLeft="true" />
-
-			<TextView
-			android:id="@+id/game_playername_green"
+		<TextView
+			android:id="@+id/game_playername_yellow"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_alignParentRight="true" />
+			android:layout_alignParentLeft="true" />
 
-		</RelativeLayout>
+		<TextView
+		android:id="@+id/game_playername_green"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true" />
 
-		<ScrollView
-		    android:id="@+id/game_event_scrollview"
-		    android:layout_width="fill_parent"
-		    android:layout_height="match_parent"
-		    android:scrollbars="vertical" >
+	</RelativeLayout>
 
-			<TextView
-				android:id="@+id/game_event_view"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" />
+	<ScrollView
+	    android:id="@+id/game_event_scrollview"
+	    android:layout_width="fill_parent"
+	    android:layout_height="match_parent"
+	    android:layout_below="@+id/game_playersnames_below"
+	    android:layout_above="@+id/turn_countdown"
+	    android:scrollbars="vertical" >
 
-		</ScrollView>
+		<TextView
+			android:id="@+id/game_event_view"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
 
-</LinearLayout>
+	</ScrollView>
+	
+	<ProgressBar
+	    android:id="@+id/turn_countdown"
+	    style="?android:attr/progressBarStyleHorizontal"
+	    android:max="60000"
+	    android:visibility="invisible"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true" />
+
+</RelativeLayout>

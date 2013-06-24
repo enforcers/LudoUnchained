@@ -11,6 +11,7 @@ import com.appspot.ludounchained.util.GameStateDrawer;
 import com.appspot.ludounchained.util.State;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -27,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -39,6 +41,8 @@ public class GameActivity extends Activity {
 	protected Turn mDiceRoll;
 	protected List<Integer> mDiceQue;
 	protected int mCurrentDiceRoll = 0;
+	protected TurnCountdown mTurnCountdown;
+	protected ProgressBar mTurnCountdownBar;
 
 	protected SparseBooleanArray mMenuItems = new SparseBooleanArray();
 
@@ -63,6 +67,8 @@ public class GameActivity extends Activity {
 			}
 			
 		});
+		
+		mTurnCountdownBar = (ProgressBar) findViewById(R.id.turn_countdown);
 	}
 	
 	@Override
@@ -385,6 +391,8 @@ public class GameActivity extends Activity {
 				mGameStateAdapter.setValidMeeples(null);
 				mGameStateAdapter.notifyDataSetChanged();
 				mGameStateGrid.invalidate();
+				
+				stopTurnCountdown();
 			}
 		}.execute();
 	}
@@ -440,5 +448,38 @@ public class GameActivity extends Activity {
 	
 	public void setMenuItemsMap(SparseBooleanArray menuItems) {
 		mMenuItems = menuItems;
+	}
+	
+	public void startTurnCountdown() {
+		if (mTurnCountdown == null) {
+			mTurnCountdown = new TurnCountdown();
+			mTurnCountdown.start();
+			mTurnCountdownBar.setVisibility(View.VISIBLE);
+		}
+	}
+	
+	public void stopTurnCountdown() {
+		if (mTurnCountdown != null) {
+			mTurnCountdown.cancel();
+			mTurnCountdown = null;
+			mTurnCountdownBar.setVisibility(View.INVISIBLE);
+		}
+	}
+	
+	public class TurnCountdown extends CountDownTimer {
+    	public TurnCountdown() {
+    		super(60000, 100);
+		}
+
+		@Override
+		public void onFinish() {
+			// kick out player
+			onBackPressed();
+		}
+
+		@Override
+		public void onTick(long millisUntilFinished) {
+			mTurnCountdownBar.setProgress(60000 - (int)millisUntilFinished);
+		}
 	}
 }
