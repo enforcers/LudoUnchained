@@ -18,6 +18,7 @@ import com.google.api.client.json.jackson.JacksonFactory;
 public class EndpointServiceStub implements EndpointService {
 	
 	private LudoUnchainedApplication appState;
+	private boolean busy = false;
 	
 	public EndpointServiceStub(LudoUnchainedApplication context) {
 		appState = context;
@@ -27,7 +28,9 @@ public class EndpointServiceStub implements EndpointService {
 		Session result = null;
 		ControllerEndpoint endpoint = getEndpoint();
 
-    	try {
+    	if (busy = false){
+    		busy = true;
+		try {
     		result = endpoint.login(username, password).execute();
     		appState.setSession(result);
     	} catch (IOException e) {
@@ -37,7 +40,8 @@ public class EndpointServiceStub implements EndpointService {
     		throw new InvalidLoginException("Login credentials are invalid");
 
     	GCMIntentService.register(appState);
-
+    	}
+    	busy = false;
     	return result;
 	}
 	
@@ -204,33 +208,38 @@ public class EndpointServiceStub implements EndpointService {
 	public Turn rollDice() {
 		Turn result = null;
 		ControllerEndpoint endpoint = getEndpoint();
-
-		try {
-			result = endpoint.rollDice(appState.getSession().getSessionId(), appState.getGame().getGameId().getId()).execute();
-		} catch (IOException e) {
-    		e.printStackTrace();
-    	}
-		
+		if (busy = false) {
+			busy = true;
+			try {
+				result = endpoint.rollDice(appState.getSession().getSessionId(), appState.getGame().getGameId().getId()).execute();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		busy = false;
 		return result;
 	}
 	
 	public void executeTurn(Turn turn, Meeple meeple)
 			throws RemoteException {
 		ControllerEndpoint endpoint = getEndpoint();
-
-		try {
-			String sessionId = appState.getSession().getSessionId();
-			long gameId = appState.getGame().getGameId().getId();
-			long turnId = turn.getId().getId();
-			long meepleId = 0;
+		if (busy = false){
+			busy = true;
+			try {
+				String sessionId = appState.getSession().getSessionId();
+				long gameId = appState.getGame().getGameId().getId();
+				long turnId = turn.getId().getId();
+				long meepleId = 0;
 			
-			if (meeple != null)
-				meepleId = meeple.getId().getId();
+				if (meeple != null)
+					meepleId = meeple.getId().getId();
 			
-			endpoint.executeTurn(sessionId, gameId, turnId, meepleId).execute();
-		} catch (IOException e) {
-    		e.printStackTrace();
+				endpoint.executeTurn(sessionId, gameId, turnId, meepleId).execute();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
     	}
+		busy = false;
 	}
 	
 	private ControllerEndpoint getEndpoint() {
