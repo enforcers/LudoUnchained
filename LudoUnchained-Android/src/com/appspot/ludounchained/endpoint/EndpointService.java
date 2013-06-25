@@ -17,6 +17,7 @@ public interface EndpointService {
 	public void acceptJoinGame(String requesterSessionId) throws RemoteException;
 	public Game startGame() throws RemoteException;
 	public List<Game> listGames() throws RemoteException;
+	public List<Score> listScores() throws RemoteException;
 	public Game getGame(Game game) throws RemoteException;
 	public Turn rollDice() throws RemoteException;
 	public void executeTurn(Turn turn, Meeple meeple) throws RemoteException;

@@ -21,7 +21,7 @@ import com.appspot.ludounchained.util.GCMSender;
 import com.appspot.ludounchained.util.MD5;
 import com.appspot.ludounchained.util.PlayerColor;
 import com.appspot.ludounchained.EMF;
-import com.appspot.ludounchained.remoteapi.LudoScorePuller;
+import com.appspot.ludounchained.remoteapi.HighScorePuller;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -469,10 +469,10 @@ public class ControllerEndpoint {
 		
 		
 		try {
-			LudoScorePuller puller = new LudoScorePuller("test@example.com","");
+			HighScorePuller puller = new HighScorePuller("test@example.com","");
 			scores  = puller.pullLudoScores();
 		} catch (IOException e) {
-
+			e.printStackTrace();
 		}
 		
 		/*
@@ -503,7 +503,6 @@ public class ControllerEndpoint {
 			mgr.close();
 		}
 		*/
-
 		return CollectionResponse.<Score> builder().setItems(scores)
 				.setNextPageToken(cursorString).build();
 	}

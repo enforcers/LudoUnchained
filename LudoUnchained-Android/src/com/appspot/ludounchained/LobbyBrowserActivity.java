@@ -92,6 +92,10 @@ public class LobbyBrowserActivity extends Activity {
 		fillGameOverview();
 	}
 	
+	public void showHighscore(MenuItem m){
+		startActivity(new Intent(getApplicationContext(), HighScoreActivity.class));
+	}
+	
 	public void newGame(MenuItem m) {
 		new BackgroundTask.Task<Game>(this) {
 			@Override

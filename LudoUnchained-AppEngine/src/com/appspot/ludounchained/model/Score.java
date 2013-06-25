@@ -6,11 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
 import com.google.appengine.api.datastore.Key;
 
 @Entity
-public class Score implements Serializable {
+public class Score implements Serializable, Comparable<Score>{
 	private static final long serialVersionUID = -8472403885032549742L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +38,9 @@ public class Score implements Serializable {
 	public int getGameId() {
 		return gameid;
 	}
+    @Override
+    public int compareTo(Score score) {
+    	Integer s = this.score;
+        return s.compareTo(score.getScore());
+    }
 }

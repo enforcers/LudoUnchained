@@ -1,5 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
+    <item
+        android:id="@+id/action_highscore"
+        android:title="@string/action_highscore"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_menu_highscore"
+        android:onClick="showHighscore" />
     <item
         android:id="@+id/action_logout"
         android:showAsAction="never"

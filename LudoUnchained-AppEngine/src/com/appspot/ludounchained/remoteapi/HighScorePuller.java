@@ -7,18 +7,20 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.tools.remoteapi.RemoteApiInstaller;
 import com.google.appengine.tools.remoteapi.RemoteApiOptions;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
-public class LudoScorePuller {
+public class HighScorePuller {
     private final RemoteApiOptions options;
 
-    public LudoScorePuller(String username, String password) throws IOException {
+    public HighScorePuller(String username, String password) throws IOException {
         this.options = new RemoteApiOptions()
             .server("localhost", 8889)
             .credentials(username,password);
@@ -39,16 +41,27 @@ public class LudoScorePuller {
               
         try {
         	DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        	Query query = new Query("select sum(s.score) as sum From Score s Group by s.player where s.gameId = 1 order by sum");
-        	
+        	//Query query = new Query("select sum(s.score) as sum From Score s Group by s.player where s.gameId = 1 order by sum");
+        	Query query = new Query("summerizedScore");
+        	//query.addFilter("gameID", FilterOperator.EQUAL , 1);
         	PreparedQuery pq = ds.prepare(query);  
+        	
+        	
         	
             for (Entity result : pq.asIterable()) {
             	  String player = (String) result.getProperty("player");
             	  long points = (long)result.getProperty("score");
             	  scores.add(new Score(player,(int)points));
+            	  
             }
-            
+            Collections.sort(scores);
+            Collections.reverse(scores);
+            /*
+            //testdaten
+            scores.clear();
+            scores.add(new Score("hans",25));
+            scores.add(new Score("toni",20));
+            */
         } finally {
             installer.uninstall();
             em.close();

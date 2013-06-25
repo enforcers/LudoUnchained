@@ -33,7 +33,6 @@ public class EndpointServiceStub implements EndpointService {
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
-    	
     	if (result == null)
     		throw new InvalidLoginException("Login credentials are invalid");
 
@@ -52,6 +51,24 @@ public class EndpointServiceStub implements EndpointService {
     		e.printStackTrace();
     	}
     	
+	}
+	
+	public List<Score> listScores(){
+		CollectionResponseScore response = new CollectionResponseScore();
+		ControllerEndpoint endpoint = getEndpoint();
+		
+		List<Score> result = new ArrayList<Score>();
+		
+    	try {
+    		response = endpoint.listScore().execute();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+    	
+		if (response.getItems() != null)
+			result = response.getItems();
+		
+		return result;
 	}
 	
 	public Session register(String username, String password) {
