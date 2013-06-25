@@ -114,6 +114,7 @@ public class GameStateDrawer extends BaseAdapter {
 				
 				if(turn.equals(currentUser)) {
 					activity.startTurnCountdown();
+					appState.notify("It's your turn. Roll the dice!");
 				}
 
 				break;

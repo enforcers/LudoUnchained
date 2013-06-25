@@ -12,7 +12,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,8 +37,6 @@ public class LobbyBrowserActivity extends Activity {
 		appState = (LudoUnchainedApplication) getApplicationContext();
 		
 		mLobbyOverview = (ListView) findViewById(R.id.lobby_overview);
-		Log.v("SESSION", "S:" + appState.getSession().toString());
-		//fillGameOverview();
 
 		final LobbyBrowserActivity _this = this;
 		mLobbyOverview.setOnItemClickListener(new OnItemClickListener() {
@@ -178,30 +175,35 @@ public class LobbyBrowserActivity extends Activity {
 			TextView greenPlayer = (TextView) rowView.findViewById(R.id.lobby_player_green);
 			TextView yellowPlayer = (TextView) rowView.findViewById(R.id.lobby_player_yellow);
 
-			Game game = objects.get(position);
-			String username = game.getRedPlayer().getUsername();
-			int playerCount = game.getPlayerCount();
-			State state = State.valueOf(game.getState());
-			
-			switch (state) {
-				case RUNNING: lobbyState.setImageResource(R.drawable.ic_lobby_full); break;
-				default: lobbyState.setImageResource(R.drawable.ic_lobby_open); break;
+			try {
+				Game game = objects.get(position);
+				String username = game.getRedPlayer().getUsername();
+				int playerCount = game.getPlayerCount();
+				State state = State.valueOf(game.getState());
+				
+				switch (state) {
+					case RUNNING: lobbyState.setImageResource(R.drawable.ic_lobby_full); break;
+					default: lobbyState.setImageResource(R.drawable.ic_lobby_open); break;
+				}
+	
+				lobbyName.setText(username + "'s Game (" + playerCount + "/4)");
+				
+				if (game.getRedPlayer() != null)
+					redPlayer.setText(game.getRedPlayer().getUsername());
+				
+				if (game.getBluePlayer() != null)
+					bluePlayer.setText(game.getBluePlayer().getUsername());
+				
+				if (game.getGreenPlayer() != null)
+					greenPlayer.setText(game.getGreenPlayer().getUsername());
+				
+				if (game.getYellowPlayer() != null)
+					yellowPlayer.setText(game.getYellowPlayer().getUsername());
+	
+			} catch (Exception e) {
+				;
 			}
-
-			lobbyName.setText(username + "'s Game (" + playerCount + "/4)");
 			
-			if (game.getRedPlayer() != null)
-				redPlayer.setText(game.getRedPlayer().getUsername());
-			
-			if (game.getBluePlayer() != null)
-				bluePlayer.setText(game.getBluePlayer().getUsername());
-			
-			if (game.getGreenPlayer() != null)
-				greenPlayer.setText(game.getGreenPlayer().getUsername());
-			
-			if (game.getYellowPlayer() != null)
-				yellowPlayer.setText(game.getYellowPlayer().getUsername());
-
 			return rowView;
 		}
 		

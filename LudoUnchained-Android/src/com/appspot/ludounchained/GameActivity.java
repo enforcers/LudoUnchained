@@ -10,6 +10,9 @@ import com.appspot.ludounchained.util.BackgroundTask;
 import com.appspot.ludounchained.util.GameStateDrawer;
 import com.appspot.ludounchained.util.State;
 
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.app.Activity;
@@ -19,7 +22,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -81,7 +83,6 @@ public class GameActivity extends Activity {
 		menu.findItem(R.id.action_game_dice_roll).setVisible(mMenuItems.get(R.id.action_game_dice_roll, false));
 		menu.findItem(R.id.action_game_back).setVisible(mMenuItems.get(R.id.action_game_back, true));
 		
-		Log.v("Dice Roll menu:", mCurrentDiceRoll + "");
 		int drawable = R.drawable.ic_menu_dice;
 		MenuItem diceRoll = menu.findItem(R.id.action_game_dice_roll);
 		
@@ -323,7 +324,6 @@ public class GameActivity extends Activity {
 					super.onPostExecute(result);
 					mDiceRoll = result;
 					mDiceQue = mDiceRoll.clone().getDice();
-					Log.v("Turn:", result.toString());
 					
 					getNextDiceRoll();
 				}
@@ -386,13 +386,14 @@ public class GameActivity extends Activity {
 			protected void onPostExecute(final Void result) {
 				super.onPostExecute(result);
 				
+				stopTurnCountdown();
+				
 				mDiceRoll = null;
 				mCurrentDiceRoll = 0;
 				mGameStateAdapter.setValidMeeples(null);
 				mGameStateAdapter.notifyDataSetChanged();
 				mGameStateGrid.invalidate();
 				
-				stopTurnCountdown();
 			}
 		}.execute();
 	}
@@ -467,19 +468,28 @@ public class GameActivity extends Activity {
 	}
 	
 	public class TurnCountdown extends CountDownTimer {
+		private boolean notificationPlayed = false;
+
     	public TurnCountdown() {
     		super(60000, 100);
 		}
 
 		@Override
 		public void onFinish() {
-			// kick out player
-			onBackPressed();
+			leaveGame();
 		}
 
 		@Override
 		public void onTick(long millisUntilFinished) {
 			mTurnCountdownBar.setProgress(60000 - (int)millisUntilFinished);
+			
+			if (notificationPlayed == false && millisUntilFinished < 30000) {
+				Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+				Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+				r.play();
+				
+				notificationPlayed = true;
+			}
 		}
 	}
 }

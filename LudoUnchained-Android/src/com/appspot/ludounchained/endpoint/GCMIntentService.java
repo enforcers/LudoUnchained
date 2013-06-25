@@ -27,8 +27,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 	}
 	
 	public static void register(Context context) {
-		GCMRegistrar.unregister(context);
 		GCMRegistrar.register(context, PROJECT_NUMBER);
+	}
+	
+	public static void unregister(Context context) {
+		GCMRegistrar.unregister(context);
 	}
 
 	/**
@@ -52,18 +55,13 @@ public class GCMIntentService extends GCMBaseIntentService {
 	 */
 	@Override
 	protected void onMessage(Context context, Intent intent) {
-		Log.i("onMessage called", "NOW");
 		Intent notificationIntent = new Intent(context, GameActivity.class);
 		notificationIntent.putExtra("message", intent.getStringExtra("message"));
 		notificationIntent.putExtra("requestJoinUser", intent.getStringExtra("requestJoinUser"));
 		notificationIntent.putExtra("requestJoinSession", intent.getStringExtra("requestJoinSession"));
 
 		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		//startActivity(notificationIntent);
 		this.sendBroadcast(intent);
-		//startActivity(notificationIntent);
-		//Log.i(EndpointServiceStub.class.getName(), "Message received:" + intent.getStringExtra("message"));
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -87,9 +85,6 @@ public class GCMIntentService extends GCMBaseIntentService {
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
-
-		Log.i(EndpointServiceStub.class.getName(), "Cloud registration succeed: " + registrationId);
-		// TODO Auto-generated method stub
 
 	}
 

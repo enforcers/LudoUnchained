@@ -47,6 +47,8 @@ public class EndpointServiceStub implements EndpointService {
     	try {
     		endpoint.logout(appState.getSession().getSessionId()).execute();
     		appState.setSession(null);
+    		
+    		GCMIntentService.unregister(appState);
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
