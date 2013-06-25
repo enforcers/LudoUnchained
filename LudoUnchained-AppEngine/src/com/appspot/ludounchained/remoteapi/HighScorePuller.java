@@ -20,7 +20,9 @@ import javax.persistence.EntityManager;
 public class HighScorePuller {
     private final RemoteApiOptions options;
 
-    public HighScorePuller(String username, String password) throws IOException {
+    public HighScorePuller() throws IOException {
+    	String username ="test@test.com";
+    	String password ="";
         this.options = new RemoteApiOptions()
             .server("localhost", 8889)
             .credentials(username,password);

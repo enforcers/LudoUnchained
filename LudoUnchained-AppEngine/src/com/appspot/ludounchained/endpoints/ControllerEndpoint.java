@@ -469,7 +469,7 @@ public class ControllerEndpoint {
 		
 		
 		try {
-			HighScorePuller puller = new HighScorePuller("test@example.com","");
+			HighScorePuller puller = new HighScorePuller();
 			scores  = puller.pullLudoScores();
 		} catch (IOException e) {
 			e.printStackTrace();
