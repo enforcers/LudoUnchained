@@ -7,7 +7,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import com.google.appengine.api.datastore.Key;
-
+/**
+ * stores the score points for players per match (every match played has on entry)
+ * @author clange
+ *
+ */
 @Entity
 public class Score implements Serializable, Comparable<Score>{
 	private static final long serialVersionUID = -8472403885032549742L;

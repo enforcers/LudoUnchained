@@ -2,7 +2,11 @@ package com.appspot.ScoreServer;
 
 import java.io.IOException;
 import javax.servlet.http.*;
-
+/**
+ * starts the scorepuller process to retrieve scores every 2 minutes
+ * @author clange
+ *
+ */
 
 @SuppressWarnings("serial")
 public class ScoreServerServlet extends HttpServlet {

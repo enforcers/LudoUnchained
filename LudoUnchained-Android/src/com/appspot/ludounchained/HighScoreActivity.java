@@ -13,15 +13,22 @@ import com.appspot.ludounchained.util.State;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
+/**
+ * creates the highscore list
+ * @author clange
+ *
+ */
 public class HighScoreActivity extends Activity {
 	protected LudoUnchainedApplication appState;
 	protected ListView mScoreOverview;
@@ -36,13 +43,6 @@ public class HighScoreActivity extends Activity {
 		
 		mScoreOverview = (ListView) findViewById(R.id.Highscore);
 		fillScoreOverview();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.high_score, menu);
-		return true;
 	}
 	
 	private void fillScoreOverview() {

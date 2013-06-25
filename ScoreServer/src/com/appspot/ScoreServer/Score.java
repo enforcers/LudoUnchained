@@ -10,6 +10,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import com.google.appengine.api.datastore.Key;
+/**
+ * represents a score entry for each player for each game
+ * @author clange
+ *
+ */
 
 @Entity
 public class Score implements Serializable, Comparable<Score>{

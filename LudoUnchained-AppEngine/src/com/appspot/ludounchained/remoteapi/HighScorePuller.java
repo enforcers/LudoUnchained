@@ -16,7 +16,11 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-
+/**
+ * gets the Highscore for Ludounchained from highscoreserver
+ * @author clange
+ *
+ */
 public class HighScorePuller {
     private final RemoteApiOptions options;
 
@@ -44,7 +48,7 @@ public class HighScorePuller {
         try {
         	DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         	//Query query = new Query("select sum(s.score) as sum From Score s Group by s.player where s.gameId = 1 order by sum");
-        	Query query = new Query("summerizedScore");
+        	Query query = new Query("Score");
         	//query.addFilter("gameID", FilterOperator.EQUAL , 1);
         	PreparedQuery pq = ds.prepare(query);  
         	

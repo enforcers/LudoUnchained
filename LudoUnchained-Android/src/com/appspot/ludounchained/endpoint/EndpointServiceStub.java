@@ -52,7 +52,10 @@ public class EndpointServiceStub implements EndpointService {
     	}
     	
 	}
-	
+	/**
+	 * gets the highscore from gameserver
+	 * @author clange
+	 */
 	public List<Score> listScores(){
 		CollectionResponseScore response = new CollectionResponseScore();
 		ControllerEndpoint endpoint = getEndpoint();

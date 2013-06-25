@@ -5,6 +5,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.tools.remoteapi.RemoteApiInstaller;
 import com.google.appengine.tools.remoteapi.RemoteApiOptions;
 import java.io.IOException;
@@ -12,7 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 
+/**
+ * accesses the scoredata from gameserver and and adds scores/summarizes scores to the database
+ * @author clange
+ *
+ */
 public class LudoScorePuller {
     private final RemoteApiOptions options;
 
@@ -45,56 +53,44 @@ public class LudoScorePuller {
         Query query = new Query("Score");
         PreparedQuery pq = ds.prepare(query);
         
-        ArrayList<Score> scores = new ArrayList<Score>();
-
+        //Transaction txn = ds.beginTransaction();
+        
         try {
             for (Entity result : pq.asIterable()) {
             	  String player = (String) result.getProperty("player");
             	  long points = (long)result.getProperty("score");
             	  
             	  Score score = new Score(player,(int)points,1);
-            	  scores.add(score);
-            	  
+            	  summerize(score);
             	  ds.delete(result.getKey());
             }
         } finally {
             installer.uninstall();
         }
         
-        EntityManager em = EMF.get().createEntityManager();
-        summerize(scores);
-        try {
-        	
-        	for (Score score : scores) {
-        		em.persist(score);
-        	}
-        } finally {
-        	em.close();
-        }
+        
     }
-	private void summerize(List<Score> scores){
+   
+	private void summerize(Score score){
 		System.out.println("summerizing");
-		List<Score> sumscores = new ArrayList<Score>();
-		for(Score score:scores){
-			boolean hit = false;
-			System.out.println(score.getPlayer());
-			for(Score sumscore:sumscores){
-				if(score.getPlayer().equals(sumscore.getPlayer())){
-					sumscore.addScore(score.getScore());
-					hit = true;
-				}
-			}
-			
-			if(hit==false){
-				sumscores.add(score);
-			}
-		}
-		
+
 		EntityManager em = EMF.get().createEntityManager();
-		for(Score score:sumscores){
-			summerizedScore sumscore = new summerizedScore(score);
-			em.persist(sumscore);
+		TypedQuery<Score> q = em.createQuery("select s from Score s where s.player = :player and s.gameId = :gameId",Score.class);
+		// set params
+		q.setParameter("player", score.getPlayer());
+		q.setParameter("gameId", score.getGameId());
+		try{
+			Score dbScore = q.getSingleResult();
+			dbScore.addScore(score.getScore());
+			System.out.println("Adding Score of " + score.getScore() + " for Player " + score.getPlayer() + " and game with id:" + score.getGameId());
+			em.persist(dbScore);
+		}catch (NoResultException e){
+			System.out.println("Creating new Score for Player " + score.getPlayer() + " and game with id:" + score.getGameId());
+			em.persist(score);
+		}finally{
+			em.close();
 		}
-		em.close();
+			
+		
 	}
 }
