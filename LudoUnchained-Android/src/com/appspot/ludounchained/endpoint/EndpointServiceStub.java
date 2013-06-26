@@ -18,6 +18,7 @@ import com.google.api.client.json.jackson.JacksonFactory;
 public class EndpointServiceStub implements EndpointService {
 	
 	private LudoUnchainedApplication appState;
+	private boolean busy = false;
 	
 	public EndpointServiceStub(LudoUnchainedApplication context) {
 		appState = context;
@@ -28,10 +29,15 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
 
     	try {
-    		result = endpoint.login(username, password).execute();
-    		appState.setSession(result);
+    		if (!busy) {
+    			busy = true;
+    			result = endpoint.login(username, password).execute();
+    			appState.setSession(result);
+    			busy = false;
+    		}
     	} catch (IOException e) {
     		e.printStackTrace();
+    		busy = false;
     	}
     	if (result == null)
     		throw new InvalidLoginException("Login credentials are invalid");
@@ -45,12 +51,17 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
     	
     	try {
-    		endpoint.logout(appState.getSession().getSessionId()).execute();
-    		appState.setSession(null);
+    		if (!busy) {
+    			busy = true;
+    			endpoint.logout(appState.getSession().getSessionId()).execute();
+    			appState.setSession(null);
+    			busy = false;
+    		}
     		
     		GCMIntentService.unregister(appState);
     	} catch (IOException e) {
     		e.printStackTrace();
+    		busy = false;
     	}
     	
 	}
@@ -65,9 +76,14 @@ public class EndpointServiceStub implements EndpointService {
 		List<Score> result = new ArrayList<Score>();
 		
     	try {
-    		response = endpoint.listScore().execute();
+    		if (!busy) {
+    			busy = true;
+    			response = endpoint.listScore().execute();
+    			busy = false;
+    		}
     	} catch (IOException e) {
     		e.printStackTrace();
+    		busy = false;
     	}
     	
 		if (response.getItems() != null)
@@ -81,10 +97,15 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
     	
     	try {
-    		result = endpoint.register(username, password).execute();
-    		appState.setSession(result);
+    		if (!busy) {
+    			busy = true;
+    			result = endpoint.register(username, password).execute();
+    			appState.setSession(result);
+    			busy = false;
+    		}
     	} catch (IOException e) {
     		e.printStackTrace();
+    		busy = false;
     	}
     	
     	if (result == null)
@@ -101,10 +122,15 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
     	
     	try {
-    		result = endpoint.newGame(appState.getSession().getSessionId()).execute();
-    		appState.setGame(result);
+    		if (!busy) {
+    			busy = true;
+    			result = endpoint.newGame(appState.getSession().getSessionId()).execute();
+    			appState.setGame(result);
+    			busy = false;
+    		}
     	} catch (IOException e) {
     		e.printStackTrace();
+    		busy = false;
     	}
 
 		return result;
@@ -115,10 +141,15 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
     	
     	try {
-    		result = endpoint.joinGame(appState.getSession().getSessionId(), game.getGameId().getId()).execute();
-    		appState.setGame(result);
+    		if (!busy) {
+    			busy = true;
+    			result = endpoint.joinGame(appState.getSession().getSessionId(), game.getGameId().getId()).execute();
+    			appState.setGame(result);
+    			busy = false;
+    		}
     	} catch (IOException e) {
     		e.printStackTrace();
+    		busy = false;
     	}
 
 		return result;
@@ -142,9 +173,14 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
     	
     	try {
-    		endpoint.requestJoinGame(appState.getSession().getSessionId(), appState.getGame().getGameId().getId()).execute();
+    		if (!busy) {
+    			busy = true;
+    			endpoint.requestJoinGame(appState.getSession().getSessionId(), appState.getGame().getGameId().getId()).execute();
+    			busy = false;
+    		}
     	} catch (IOException e) {
     		e.printStackTrace();
+    		busy = false;
     	}
 	}
 
@@ -152,9 +188,14 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
     	
     	try {
-    		endpoint.acceptJoinGame(appState.getSession().getSessionId(), appState.getGame().getGameId().getId(), requesterSessionId).execute();
+    		if (!busy) {
+    			busy = true;
+    			endpoint.acceptJoinGame(appState.getSession().getSessionId(), appState.getGame().getGameId().getId(), requesterSessionId).execute();
+    			busy = false;
+    		}
     	} catch (IOException e) {
     		e.printStackTrace();
+    		busy = false;
     	}
 	}
 	
@@ -163,10 +204,15 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
 
     	try {
-    		result = endpoint.startGame(appState.getSession().getSessionId(), appState.getGame().getGameId().getId()).execute();
-    		appState.setGame(result);
+    		if (!busy) {
+    			busy = true;
+    			result = endpoint.startGame(appState.getSession().getSessionId(), appState.getGame().getGameId().getId()).execute();
+    			appState.setGame(result);
+    			busy = false;
+    		}
     	} catch (IOException e) {
     		e.printStackTrace();
+    		busy = false;
     	}
 
 		return result;
@@ -178,9 +224,14 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
 
 		try {
-			response = endpoint.listGame(appState.getSession().getSessionId()).execute();
+			if (!busy) {
+				busy = true;
+				response = endpoint.listGame(appState.getSession().getSessionId()).execute();
+				busy = false;
+			}
 		} catch (IOException e) {
     		e.printStackTrace();
+    		busy = false;
     	}
 		
 		if (response.getItems() != null)
@@ -194,10 +245,15 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
 
     	try {
-    		result = endpoint.getGame(appState.getSession().getSessionId(), game.getGameId().getId()).execute();
-    		appState.setGame(result);
+    		if (!busy) {
+    			busy = true;
+    			result = endpoint.getGame(appState.getSession().getSessionId(), game.getGameId().getId()).execute();
+    			appState.setGame(result);
+    			busy = false;
+    		}
     	} catch (IOException e) {
     		e.printStackTrace();
+    		busy = false;
     	}
 
 		return result;
@@ -208,9 +264,14 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
 
 		try {
-			result = endpoint.rollDice(appState.getSession().getSessionId(), appState.getGame().getGameId().getId()).execute();
+			if (!busy) {
+				busy = true;
+				result = endpoint.rollDice(appState.getSession().getSessionId(), appState.getGame().getGameId().getId()).execute();
+				busy = false;
+			}
 		} catch (IOException e) {
     		e.printStackTrace();
+    		busy = false;
     	}
 		
 		return result;
@@ -221,17 +282,22 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
 
 		try {
-			String sessionId = appState.getSession().getSessionId();
-			long gameId = appState.getGame().getGameId().getId();
-			long turnId = turn.getId().getId();
-			long meepleId = 0;
-			
-			if (meeple != null)
-				meepleId = meeple.getId().getId();
-			
-			endpoint.executeTurn(sessionId, gameId, turnId, meepleId).execute();
+			if (!busy) {
+				busy = true;
+				String sessionId = appState.getSession().getSessionId();
+				long gameId = appState.getGame().getGameId().getId();
+				long turnId = turn.getId().getId();
+				long meepleId = 0;
+				
+				if (meeple != null)
+					meepleId = meeple.getId().getId();
+				
+				endpoint.executeTurn(sessionId, gameId, turnId, meepleId).execute();
+				busy = false;
+			}
 		} catch (IOException e) {
     		e.printStackTrace();
+    		busy = false;
     	}
 	}
 	
