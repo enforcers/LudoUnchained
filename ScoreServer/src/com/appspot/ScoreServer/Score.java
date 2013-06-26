@@ -1,11 +1,8 @@
 package com.appspot.ScoreServer;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,7 +33,7 @@ public class Score implements Serializable, Comparable<Score>{
 		this.score = score;
 		this.gameId = gameId;
 	}
-	private Key getKey(){
+	public Key getKey(){
 		return this.scoreID;
 	}
 

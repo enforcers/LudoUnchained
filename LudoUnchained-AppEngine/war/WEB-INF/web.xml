@@ -23,4 +23,13 @@
     <servlet-name>RemoteApiServlet</servlet-name>
     <url-pattern>/remote_api</url-pattern>
 </servlet-mapping>
+
+	<servlet>
+		<servlet-name>CronCleanup</servlet-name>
+		<servlet-class>com.appspot.ludounchained.CronCleanup</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CronCleanup</servlet-name>
+		<url-pattern>/cleanup</url-pattern>
+	</servlet-mapping>
 </web-app>

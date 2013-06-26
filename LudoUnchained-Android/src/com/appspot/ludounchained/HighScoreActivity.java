@@ -2,26 +2,17 @@ package com.appspot.ludounchained;
 
 import java.util.List;
 
-import com.appspot.ludounchained.LobbyBrowserActivity.GameListAdapter;
-import com.appspot.ludounchained.controllerEndpoint.model.Game;
-import com.appspot.ludounchained.controllerEndpoint.model.GameState;
 import com.appspot.ludounchained.controllerEndpoint.model.Score;
 import com.appspot.ludounchained.exception.RemoteException;
 import com.appspot.ludounchained.util.BackgroundTask;
-import com.appspot.ludounchained.util.State;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 /**

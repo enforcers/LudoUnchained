@@ -5,12 +5,9 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.tools.remoteapi.RemoteApiInstaller;
 import com.google.appengine.tools.remoteapi.RemoteApiOptions;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -27,8 +24,8 @@ public class LudoScorePuller {
     public LudoScorePuller() throws IOException {
     	
 
-    	String username ="test@test.com";
-    	String password ="";
+    	String username ="ludounchained.fhm@gmail.com";
+    	String password ="wifhm123";
         // Authenticating with username and password is slow, so we'll do it
         // once during construction and then store the credentials for reuse.
         this.options = new RemoteApiOptions()
