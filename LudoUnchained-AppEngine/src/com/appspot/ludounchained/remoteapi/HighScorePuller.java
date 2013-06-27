@@ -24,8 +24,8 @@ public class HighScorePuller {
     private final RemoteApiOptions options;
 
     public HighScorePuller() throws IOException {
-    	String username ="test@test.com";
-    	String password ="";
+    	String username ="ludounchained.fhm@gmail.com";
+    	String password ="wifhm123";
         this.options = new RemoteApiOptions()
             .server("unchainedscoreserver.appspot.com", 443)
             .credentials(username,password);
