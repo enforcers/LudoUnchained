@@ -357,11 +357,12 @@ public class ControllerEndpoint {
 
 			if (game != null) {
 				boolean singlePlayer = game.isSinglePlayer();
-				game.setPlayer(game.getPlayerColor(session.getUser()), null);
 				
 				if (game.getState() == Game.State.RUNNING && game.getPlayers().contains(session.getUser())) {
 					mgr.persist(new RawScore(session.getUser().getUsername(),-1));
 				}
+
+				game.setPlayer(game.getPlayerColor(session.getUser()), null);
 
 				game.removeSpectator(session.getUser());
 

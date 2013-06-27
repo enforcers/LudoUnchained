@@ -415,6 +415,7 @@ public class GameActivity extends Activity {
 			@Override
 			protected void onPostExecute(final Game result) {
 				super.onPostExecute(result);
+				stopTurnCountdown();
 				finish();
 			}
 		}.execute();
