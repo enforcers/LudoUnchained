@@ -42,9 +42,6 @@ public class ControllerEndpoint {
 
 		try {
 			user = mgr.find(User.class, username);
-			// test daten für scoreserver
-			mgr.persist(new Score(username,2));
-			mgr.persist(new Score(username,1));
 		} finally {
 			mgr.close();
 		}
@@ -362,7 +359,7 @@ public class ControllerEndpoint {
 				game.setPlayer(game.getPlayerColor(session.getUser()), null);
 				
 				if (game.getState() == Game.State.RUNNING && game.getPlayers().contains(session.getUser())) {
-					// TODO Highscore abziehen, laufendes Spiel verlassen
+					mgr.persist(new Score(session.getUser().getUsername(),-1));
 				}
 
 				game.removeSpectator(session.getUser());
@@ -418,7 +415,7 @@ public class ControllerEndpoint {
 			@Named("gameId") long gameId,
 			@Named("turnId") long turnId,
 			@Named("meepleId") long meepleId) {
-		validateSession(sessionId);
+		Session session = validateSession(sessionId);
 		Turn turn = null;
 		Game game = null;
 		AIPlayer AI = null;
@@ -430,6 +427,15 @@ public class ControllerEndpoint {
 			turn = mgr.find(Turn.class, turnId);
 			
 			turn.execute(meepleId);
+			
+			if (game.isFinished(game.getGameState().getTurnColor())) {
+				int score = game.getPlayerCount();
+				
+				if (!game.isSinglePlayer())
+					score--;
+
+				mgr.persist(new Score(session.getUser().getUsername(), score));
+			}
 			
 			GCMSender.informUsers(getUserSessions(game), turn);
 
@@ -445,7 +451,7 @@ public class ControllerEndpoint {
 					game.nextPlayer();
 				}
 			}
-
+			
 			mgr.remove(turn);
 		} finally {
 			mgr.close();

@@ -62,6 +62,7 @@
 	    android:layout_height="match_parent"
 	    android:layout_below="@+id/game_playersnames_below"
 	    android:layout_above="@+id/turn_countdown"
+	    android:padding="5dp"
 	    android:scrollbars="vertical" >
 
 		<TextView

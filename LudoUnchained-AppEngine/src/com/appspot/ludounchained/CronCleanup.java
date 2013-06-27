@@ -38,7 +38,6 @@ public class CronCleanup extends HttpServlet {
 				
 				if (timeDiff > 30) {
 					mgr.remove(session);
-					sessions.remove(session);
 				}
 			}
 			

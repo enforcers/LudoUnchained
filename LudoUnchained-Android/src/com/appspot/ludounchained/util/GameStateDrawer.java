@@ -120,6 +120,7 @@ public class GameStateDrawer extends BaseAdapter {
 				break;
 			case FINISHED:
 				menuItems.put(R.id.action_game_dice_roll, false);
+				appState.notify("Game has been finished!");
 				break;
 		}
 		

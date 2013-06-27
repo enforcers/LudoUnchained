@@ -253,7 +253,7 @@ public class Game implements Serializable {
 		return result;
 	}
 	
-	private boolean isFinished(PlayerColor color) {
+	public boolean isFinished(PlayerColor color) {
 		boolean result = true;
 		
 		for (Meeple meeple : gameState.getMeeples()) {
