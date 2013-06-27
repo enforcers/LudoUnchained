@@ -1,5 +1,9 @@
 package com.appspot.ludounchained;
 
+/**
+ * @author lmintert
+ */
+
 import java.util.List;
 
 import com.appspot.ludounchained.controllerEndpoint.model.HighScore;

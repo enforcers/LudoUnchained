@@ -1,5 +1,10 @@
 package com.appspot.ludounchained.cvo;
 
+
+/**
+ * @author vfast, awakup
+ */
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

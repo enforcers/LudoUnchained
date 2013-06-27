@@ -1,5 +1,9 @@
 package com.appspot.ludounchained;
 
+/**
+ * @author lmintert
+ */
+
 import com.appspot.ludounchained.controllerEndpoint.model.Session;
 import com.appspot.ludounchained.exception.RemoteException;
 import com.appspot.ludounchained.util.BackgroundTask;

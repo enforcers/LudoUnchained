@@ -1,5 +1,9 @@
 package com.appspot.ludounchained.model;
 
+/**
+ * @author vfast, awakup, lmintert
+ */
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

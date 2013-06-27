@@ -1,5 +1,9 @@
 package com.appspot.ludounchained.cvo;
 
+/**
+ * @author vfast, awakup
+ */
+
 import java.io.Serializable;
 
 import com.appspot.ludounchained.util.PlayerColor;

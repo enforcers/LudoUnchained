@@ -1,5 +1,9 @@
 package com.appspot.ludounchained.model;
 
+/**
+ * @author clange
+ */
+
 public class HighScore implements Comparable<HighScore> {
 	private String player;
 	private int score;

@@ -1,5 +1,9 @@
 package com.appspot.ludounchained.util;
 
+/**
+ * @author lmintert
+ */
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

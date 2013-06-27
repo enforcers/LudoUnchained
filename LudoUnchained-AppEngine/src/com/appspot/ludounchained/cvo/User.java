@@ -1,5 +1,9 @@
 package com.appspot.ludounchained.cvo;
 
+/**
+ * @author vfast
+ */
+
 import java.io.Serializable;
 
 public class User implements Serializable {

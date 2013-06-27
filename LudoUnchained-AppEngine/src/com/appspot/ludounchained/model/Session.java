@@ -1,5 +1,9 @@
 package com.appspot.ludounchained.model;
 
+/**
+ * @author vfast, awakup
+ */
+
 import java.io.Serializable;
 import java.util.Date;
 

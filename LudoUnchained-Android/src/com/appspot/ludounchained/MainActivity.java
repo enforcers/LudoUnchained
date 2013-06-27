@@ -1,5 +1,9 @@
 package com.appspot.ludounchained;
 
+/**
+ * @author lmintert
+ */
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;

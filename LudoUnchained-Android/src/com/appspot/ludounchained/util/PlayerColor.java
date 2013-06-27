@@ -1,5 +1,9 @@
 package com.appspot.ludounchained.util;
 
+/**
+ * @author lmintert
+ */
+
 import com.appspot.ludounchained.controllerEndpoint.model.Game;
 import com.appspot.ludounchained.controllerEndpoint.model.User;
 

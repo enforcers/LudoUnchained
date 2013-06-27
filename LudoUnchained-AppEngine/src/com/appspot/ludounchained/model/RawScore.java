@@ -1,5 +1,9 @@
 package com.appspot.ludounchained.model;
 
+/**
+ * @author clange
+ */
+
 import java.io.Serializable;
 
 import javax.persistence.Entity;
