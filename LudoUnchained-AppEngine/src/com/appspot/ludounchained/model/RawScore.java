@@ -13,7 +13,7 @@ import com.google.appengine.api.datastore.Key;
  *
  */
 @Entity
-public class Score implements Serializable, Comparable<Score>{
+public class RawScore implements Serializable{
 	private static final long serialVersionUID = -8472403885032549742L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +22,11 @@ public class Score implements Serializable, Comparable<Score>{
 	private int score;
 	private int gameid;
 	
-	public Score() {
+	public RawScore() {
 		super();
 	}
 
-	public Score (String player, int score){
+	public RawScore (String player, int score){
 		this.player = player;
 		this.score = score;
 	}
@@ -42,9 +42,5 @@ public class Score implements Serializable, Comparable<Score>{
 	public int getGameId() {
 		return gameid;
 	}
-    @Override
-    public int compareTo(Score score) {
-    	Integer s = this.score;
-        return s.compareTo(score.getScore());
-    }
+
 }

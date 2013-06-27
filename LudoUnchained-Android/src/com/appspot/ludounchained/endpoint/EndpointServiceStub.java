@@ -69,11 +69,11 @@ public class EndpointServiceStub implements EndpointService {
 	 * gets the highscore from gameserver
 	 * @author clange
 	 */
-	public List<Score> listScores(){
-		CollectionResponseScore response = new CollectionResponseScore();
+	public List<HighScore> listScores(){
+		CollectionResponseHighScore response = new CollectionResponseHighScore();
 		ControllerEndpoint endpoint = getEndpoint();
 		
-		List<Score> result = new ArrayList<Score>();
+		List<HighScore> result = new ArrayList<HighScore>();
 		
     	try {
     		if (!busy) {
