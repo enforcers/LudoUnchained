@@ -472,7 +472,7 @@ public class ControllerEndpoint {
 
 		//EntityManager mgr = null;
 		//Cursor cursor = null;
-		List<HighScore> scores = null;
+		List<HighScore> scores = new ArrayList<HighScore>();;
 		
 		
 		try {
@@ -510,6 +510,12 @@ public class ControllerEndpoint {
 			mgr.close();
 		}
 		*/
+		if(scores.isEmpty()){
+			scores.add(new HighScore("eins",100));
+			scores.add(new HighScore("zwei",50));
+			scores.add(new HighScore("drei",25));
+			System.out.println("Test Highscore transmitted: " + scores.size());
+		}
 		return CollectionResponse.<HighScore> builder().setItems(scores)
 				.setNextPageToken(cursorString).build();
 	}

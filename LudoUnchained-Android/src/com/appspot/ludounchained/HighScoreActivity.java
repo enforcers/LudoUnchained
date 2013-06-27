@@ -23,7 +23,6 @@ import android.widget.TextView;
 public class HighScoreActivity extends Activity {
 	protected LudoUnchainedApplication appState;
 	protected ListView mScoreOverview;
-	int i = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +63,6 @@ public class HighScoreActivity extends Activity {
 	public class ScoreListAdapter extends ArrayAdapter<HighScore> {
 		private final Context context;
 		private List<HighScore> objects;
-
 		public ScoreListAdapter(Context context, List<HighScore> objects) {
 			super(context, R.layout.lobby_row, objects);
 			this.context = context;
@@ -76,16 +74,16 @@ public class HighScoreActivity extends Activity {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View rowView = inflater.inflate(R.layout.score_row, parent, false);
-
+			Integer pos = position+1;
 			HighScore score = objects.get(position);
 			
-			i++;
+			
 			if (score != null){
 				TextView place = (TextView) rowView.findViewById(R.id.score_row_place);
 				TextView player = (TextView) rowView.findViewById(R.id.score_row_player);
 				TextView scr = (TextView) rowView.findViewById(R.id.score_row_score);
 				if (place != null){
-					place.setText( i );
+					place.setText(pos.toString());
 				}
 				if (player != null){
 					player.setText(score.getPlayer());
