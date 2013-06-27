@@ -160,7 +160,12 @@ public class EndpointServiceStub implements EndpointService {
 		ControllerEndpoint endpoint = getEndpoint();
     	
     	try {
-    		result = endpoint.leaveGame(appState.getSession().getSessionId(), appState.getGame().getGameId().getId()).execute();
+    		Session session = appState.getSession();
+    		Game game = appState.getGame();
+    		
+    		if (session != null && game != null)
+    			result = endpoint.leaveGame(session.getSessionId(), game.getGameId().getId()).execute();
+
     		appState.setGame(null);
     	} catch (IOException e) {
     		e.printStackTrace();
