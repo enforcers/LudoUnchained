@@ -21,31 +21,24 @@ import javax.persistence.TypedQuery;
  */
 public class LudoScorePuller {
 	private final int GAME_LUDO = 1;
-    private final RemoteApiOptions options;
+    private RemoteApiOptions options;
+    private String username;
+    private String password;
 
-    public LudoScorePuller() throws IOException {
+    public LudoScorePuller() {
 
-    	String username ="ludounchained.fhm@gmail.com";
-    	String password ="wifhm123";
-        // Authenticating with username and password is slow, so we'll do it
-        // once during construction and then store the credentials for reuse.
-        this.options = new RemoteApiOptions()
-            .server("ludounchained.appspot.com", 443)
-            .credentials(username,password);
-        RemoteApiInstaller installer = new RemoteApiInstaller();
-        installer.install(options);
-        try {
-            // Update the options with reusable credentials so we can skip
-            // authentication on subsequent calls.
-            options.reuseCredentials(username, installer.serializeCredentials());
-        } finally {
-            installer.uninstall();
-        }
+    	username ="ludounchained.fhm@gmail.com";
+    	password ="wifhm123";
+
     }
 
    public void pullLudoScore() throws IOException {
-        RemoteApiInstaller installer = new RemoteApiInstaller();
-        installer.install(options);
+       options = new RemoteApiOptions()
+	       .server("ludounchained.appspot.com", 443)
+	       .credentials(username,password);
+
+	   RemoteApiInstaller installer = new RemoteApiInstaller();
+	   installer.install(options);
         
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         Query query = new Query("RawScore");
