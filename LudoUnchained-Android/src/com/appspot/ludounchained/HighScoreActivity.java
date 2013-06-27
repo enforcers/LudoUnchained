@@ -2,7 +2,7 @@ package com.appspot.ludounchained;
 
 import java.util.List;
 
-import com.appspot.ludounchained.controllerEndpoint.model.Score;
+import com.appspot.ludounchained.controllerEndpoint.model.HighScore;
 import com.appspot.ludounchained.exception.RemoteException;
 import com.appspot.ludounchained.util.BackgroundTask;
 
@@ -23,7 +23,7 @@ import android.widget.TextView;
 public class HighScoreActivity extends Activity {
 	protected LudoUnchainedApplication appState;
 	protected ListView mScoreOverview;
-	//protected ScoreListAdapter mScoreListAdapter;
+	int i = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +37,10 @@ public class HighScoreActivity extends Activity {
 	}
 	
 	private void fillScoreOverview() {
-		new BackgroundTask.Task<List<Score>>(this) {
+		new BackgroundTask.Task<List<HighScore>>(this) {
 			
 			@Override
-			protected List<Score> doInBackground(Void... params) {
+			protected List<HighScore> doInBackground(Void... params) {
 				try {
 					return appState.getEndpoint().listScores();
 				} catch (RemoteException e) {
@@ -52,7 +52,7 @@ public class HighScoreActivity extends Activity {
 			}
 			
 			@Override
-			protected void onPostExecute(final List<Score> result) {
+			protected void onPostExecute(final List<HighScore> result) {
 				super.onPostExecute(result);
 
 				ScoreListAdapter mScoreListAdapter = new ScoreListAdapter(getApplicationContext(), result);
@@ -61,11 +61,11 @@ public class HighScoreActivity extends Activity {
 		}.execute();		
 	}
 	
-	public class ScoreListAdapter extends ArrayAdapter<Score> {
+	public class ScoreListAdapter extends ArrayAdapter<HighScore> {
 		private final Context context;
-		private List<Score> objects;
+		private List<HighScore> objects;
 
-		public ScoreListAdapter(Context context, List<Score> objects) {
+		public ScoreListAdapter(Context context, List<HighScore> objects) {
 			super(context, R.layout.lobby_row, objects);
 			this.context = context;
 			this.objects = objects;
@@ -77,14 +77,15 @@ public class HighScoreActivity extends Activity {
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View rowView = inflater.inflate(R.layout.score_row, parent, false);
 
-			Score score = objects.get(position);
+			HighScore score = objects.get(position);
 			
+			i++;
 			if (score != null){
 				TextView place = (TextView) rowView.findViewById(R.id.score_row_place);
 				TextView player = (TextView) rowView.findViewById(R.id.score_row_player);
 				TextView scr = (TextView) rowView.findViewById(R.id.score_row_score);
 				if (place != null){
-					place.setText("1");
+					place.setText( i );
 				}
 				if (player != null){
 					player.setText(score.getPlayer());

@@ -47,7 +47,7 @@ public class LudoScorePuller {
         installer.install(options);
  
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        Query query = new Query("Score");
+        Query query = new Query("RawScore");
         PreparedQuery pq = ds.prepare(query);
         
         //Transaction txn = ds.beginTransaction();

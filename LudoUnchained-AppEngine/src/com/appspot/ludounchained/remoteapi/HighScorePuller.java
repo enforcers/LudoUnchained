@@ -1,7 +1,8 @@
 package com.appspot.ludounchained.remoteapi;
 
 import com.appspot.ludounchained.EMF;
-import com.appspot.ludounchained.model.Score;
+import com.appspot.ludounchained.model.HighScore;
+import com.appspot.ludounchained.model.RawScore;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -38,11 +39,11 @@ public class HighScorePuller {
         }
     }
 
-   public List<Score> pullLudoScores() throws IOException {
+   public List<HighScore> pullLudoScores() throws IOException {
         RemoteApiInstaller installer = new RemoteApiInstaller();
         installer.install(options);
         EntityManager em = EMF.get().createEntityManager();
-        List<Score> scores = new ArrayList<Score>();
+        List<HighScore> scores = new ArrayList<HighScore>();
               
         try {
         	DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -56,17 +57,18 @@ public class HighScorePuller {
             for (Entity result : pq.asIterable()) {
             	  String player = (String) result.getProperty("player");
             	  long points = (long)result.getProperty("score");
-            	  scores.add(new Score(player,(int)points));
+            	  scores.add(new HighScore(player,(int)points));
             	  
             }
-            Collections.sort(scores);
-            Collections.reverse(scores);
+            
             /*
             //testdaten
             scores.clear();
-            scores.add(new Score("hans",25));
-            scores.add(new Score("toni",20));
+            scores.add(new RawScore("hans",25));
+            scores.add(new RawScore("toni",20));
             */
+            Collections.sort(scores);
+            Collections.reverse(scores);
         } finally {
             installer.uninstall();
             em.close();

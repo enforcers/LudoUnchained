@@ -13,7 +13,8 @@ import com.appspot.ludounchained.model.AIPlayer;
 import com.appspot.ludounchained.model.Game;
 import com.appspot.ludounchained.model.Game.State;
 import com.appspot.ludounchained.model.GameState;
-import com.appspot.ludounchained.model.Score;
+import com.appspot.ludounchained.model.HighScore;
+import com.appspot.ludounchained.model.RawScore;
 import com.appspot.ludounchained.model.Session;
 import com.appspot.ludounchained.model.Turn;
 import com.appspot.ludounchained.model.User;
@@ -359,7 +360,7 @@ public class ControllerEndpoint {
 				game.setPlayer(game.getPlayerColor(session.getUser()), null);
 				
 				if (game.getState() == Game.State.RUNNING && game.getPlayers().contains(session.getUser())) {
-					mgr.persist(new Score(session.getUser().getUsername(),-1));
+					mgr.persist(new RawScore(session.getUser().getUsername(),-1));
 				}
 
 				game.removeSpectator(session.getUser());
@@ -434,7 +435,7 @@ public class ControllerEndpoint {
 				if (!game.isSinglePlayer())
 					score--;
 
-				mgr.persist(new Score(session.getUser().getUsername(), score));
+				mgr.persist(new RawScore(session.getUser().getUsername(), score));
 			}
 			
 			GCMSender.informUsers(getUserSessions(game), turn);
@@ -465,13 +466,13 @@ public class ControllerEndpoint {
 	}
 	
 	@ApiMethod(name = "listScore")
-	public CollectionResponse<Score> listScore(
+	public CollectionResponse<HighScore> listScore(
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("limit") Integer limit) {
 
 		//EntityManager mgr = null;
 		//Cursor cursor = null;
-		List<Score> scores = null;
+		List<HighScore> scores = null;
 		
 		
 		try {
@@ -509,7 +510,7 @@ public class ControllerEndpoint {
 			mgr.close();
 		}
 		*/
-		return CollectionResponse.<Score> builder().setItems(scores)
+		return CollectionResponse.<HighScore> builder().setItems(scores)
 				.setNextPageToken(cursorString).build();
 	}
 
