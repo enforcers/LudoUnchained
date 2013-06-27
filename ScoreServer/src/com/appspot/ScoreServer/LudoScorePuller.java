@@ -29,7 +29,7 @@ public class LudoScorePuller {
         // Authenticating with username and password is slow, so we'll do it
         // once during construction and then store the credentials for reuse.
         this.options = new RemoteApiOptions()
-            .server("localhost", 8888)
+            .server("ludounchained.appspot.com", 443)
             .credentials(username,password);
         RemoteApiInstaller installer = new RemoteApiInstaller();
         installer.install(options);

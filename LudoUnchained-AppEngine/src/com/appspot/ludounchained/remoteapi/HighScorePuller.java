@@ -2,7 +2,6 @@ package com.appspot.ludounchained.remoteapi;
 
 import com.appspot.ludounchained.EMF;
 import com.appspot.ludounchained.model.HighScore;
-import com.appspot.ludounchained.model.RawScore;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -28,7 +27,7 @@ public class HighScorePuller {
     	String username ="test@test.com";
     	String password ="";
         this.options = new RemoteApiOptions()
-            .server("localhost", 8889)
+            .server("unchainedscoreserver.appspot.com", 443)
             .credentials(username,password);
         RemoteApiInstaller installer = new RemoteApiInstaller();
         installer.install(options);
